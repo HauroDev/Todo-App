@@ -4,7 +4,7 @@ const { User } = require('../database/db')
 const {
   validationPartialUser,
   validationUser
-} = require('../utils/validations')
+} = require('../utils/validations/user')
 const { ResponseError } = require('../utils/errors')
 const { JWT_SECRET } = require('../config')
 
@@ -13,6 +13,14 @@ class UserController {
     const user = validationUser(req.body)
 
     try {
+      const isExist = await User.findOne({
+        where: { username: user.data.username }
+      })
+
+      if (isExist) {
+        throw new ResponseError({ message: 'User already exists', status: 400 })
+      }
+
       if (!user.success) {
         throw new ResponseError({
           message: user.error,
@@ -28,7 +36,10 @@ class UserController {
         password: passwordHash
       })
 
-      res.status(204).json(newUser)
+      const newUserJSON = newUser.toJSON()
+      delete newUserJSON.password
+
+      res.status(201).json(newUserJSON)
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }
@@ -47,14 +58,14 @@ class UserController {
           ? false
           : await bcrypt.compare(user.data.password, userDb.password)
 
-      if (!userDb && !passwordCorrect) {
+      if (!userDb || !passwordCorrect) {
         throw new ResponseError({
           message: 'Invalid user or password',
           status: 401
         })
       }
 
-      const userJSON = user.toJSON()
+      const userJSON = userDb.toJSON()
       delete userJSON.password
 
       const token = jwt.sign(userJSON, JWT_SECRET)

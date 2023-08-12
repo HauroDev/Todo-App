@@ -4,7 +4,7 @@ const { readdirSync } = require('fs')
 const path = require('path')
 const modelsDir = path.join(__dirname, 'models')
 
-const db = new Sequelize(PG_NAME, PG_USER, (PG_PASS), {
+const db = new Sequelize(PG_NAME, PG_USER, PG_PASS, {
   dialect: 'postgres',
   host: PG_HOST,
   logging: console.log
@@ -25,20 +25,53 @@ db.models = modelsToSync
 
 const { User, Group, List, Task, Tag } = db.models
 
-User.hasMany(Group)
-Group.belongsTo(User)
+User.hasMany(Group, {
+  foreignKey: 'id_user',
+  as: 'groups'
+})
 
-User.hasMany(List)
-List.belongsTo(User)
+Group.belongsTo(User, {
+  foreignKey: 'id_user'
+})
 
-Group.hasOne(List)
-List.belongsTo(Group)
+User.hasMany(List, {
+  foreignKey: 'id_user',
+  as: 'lists'
+})
 
-List.hasMany(Task)
-Task.belongsTo(List)
+List.belongsTo(User, {
+  foreignKey: 'id_user'
+})
 
-Task.belongsToMany(Tag, { through: 'Task_Tags', foreignKey: 'id_tag' })
-Tag.belongsToMany(Task, { through: 'Task_Tags', foreignKey: 'id_task' })
+Group.hasOne(List, {
+  foreignKey: 'id_group',
+  as: 'list'
+})
+
+List.belongsTo(Group, {
+  foreignKey: 'id_group'
+})
+
+List.hasMany(Task, {
+  foreignKey: 'id_list',
+  as: 'tasks'
+})
+
+Task.belongsTo(List, {
+  foreignKey: 'id_list'
+})
+
+Task.belongsToMany(Tag, {
+  through: 'Task_Tags',
+  foreignKey: 'id_task',
+  otherKey: 'id_tag'
+})
+
+Tag.belongsToMany(Task, {
+  through: 'Task_Tags',
+  foreignKey: 'id_tag',
+  otherKey: 'id_task'
+})
 
 module.exports = {
   db,

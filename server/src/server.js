@@ -2,6 +2,7 @@ const express = require('express')
 const { db } = require('./database/db')
 const routerApp = require('./routers/router')
 const { PORT } = require('./config')
+const morgan = require('morgan')
 
 class Server {
   constructor () {
@@ -17,6 +18,7 @@ class Server {
 
   middlewares () {
     this.app.disable('x-powered-by')
+    this.app.use(morgan('dev'))
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
     this.app.use('/api/v1', routerApp)
