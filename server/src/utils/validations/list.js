@@ -9,7 +9,7 @@ const validationList = (list) => {
 }
 
 const validationPartialList = (list) => {
-  return ListSchema.partial({ description: true }).safeParse(list)
+  return ListSchema.partial().safeParse(list)
 }
 
 module.exports = {

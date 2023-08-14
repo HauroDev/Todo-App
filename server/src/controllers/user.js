@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken')
 const { User } = require('../database/db')
 const {
   validationPartialUser,
-  validationUser
+  validationUser,
+  userExists
 } = require('../utils/validations/user')
 const { ResponseError } = require('../utils/errors')
 const { JWT_SECRET } = require('../config')
@@ -76,6 +77,21 @@ class UserController {
     }
   }
 
+  static async update (req, res) {
+    const { idUser } = req.params
+    const info = validationPartialUser(req.body)
+
+    try {
+      const user = await userExists(idUser)
+
+      const userUpdated = await user.update(info.data)
+
+      res.json(userUpdated)
+    } catch (error) {
+      res.status(error.status || 500).json({ message: error.message })
+    }
+  }
+
   static async getAll (_req, res) {
     const allUsers = await User.findAll({
       attributes: {
@@ -84,6 +100,21 @@ class UserController {
     })
 
     res.json(allUsers)
+  }
+
+  static async getById (req, res) {
+    const { idUser } = req.params
+
+    try {
+      const user = await userExists(idUser)
+
+      const userJSON = user.toJSON()
+      delete userJSON.password
+
+      res.json(userJSON)
+    } catch (error) {
+      res.status(error.status || 500).json({ message: error.message })
+    }
   }
 }
 
