@@ -1,6 +1,9 @@
 const { List } = require('../database/db')
 const { ResponseError } = require('../utils/errors')
-const { validationList, validationPartialList } = require('../utils/validations/list')
+const {
+  validationList,
+  validationPartialList
+} = require('../utils/validations/list')
 const { userExists } = require('../utils/validations/user')
 
 class ListController {
@@ -42,12 +45,12 @@ class ListController {
 
   static async create (req, res) {
     const { idUser } = req.params
-    const list = validationList(req.body)
+    const listInfo = validationList(req.body)
 
     try {
       const userFound = await userExists(idUser)
 
-      const newList = await userFound.createList(list.data)
+      const newList = await userFound.createList(listInfo.data)
 
       res.status(201).json(newList)
     } catch (error) {
@@ -104,7 +107,16 @@ class ListController {
     try {
       await userExists(idUser)
 
-      await List.restore({ where: { id_list: idList } })
+      const listFound = await List.findByPk(idList, { paranoid: false })
+
+      if (listFound.toJSON().id_user !== idUser) {
+        throw new ResponseError({
+          message: 'this list is not owned by the user',
+          status: 403
+        })
+      }
+
+      await listFound.restore({ where: { id_list: idList } })
 
       res.status(200).json({ message: 'list restored' })
     } catch (error) {

@@ -1,15 +1,15 @@
 const { Router } = require('express')
-const LC = require('../controllers/list')
+const ListController = require('../controllers/list')
 
 const router = Router()
 
-router.get('/:idUser/all', LC.getAll)
-router.post('/:idUser/create', LC.create)
+router.get('/:idUser/all', ListController.getAll)
+router.post('/:idUser/create', ListController.create)
 
-router.put('/:idUser/:idList/delete', LC.softDelete)
-router.put('/:idUser/:idList/restore', LC.restore)
-router.patch('/:idUser/:idList/update', LC.update)
+router.put('/:idUser/:idList/update', ListController.update)
+router.put('/:idUser/:idList/delete', ListController.softDelete)
+router.put('/:idUser/:idList/restore', ListController.restore)
 
-router.get('/:idUser/:idList', LC.getById)
+router.get('/:idUser/:idList', ListController.getById)
 
 module.exports = router

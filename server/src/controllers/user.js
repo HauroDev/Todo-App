@@ -1,4 +1,3 @@
-const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { User } = require('../database/db')
 const {
@@ -8,29 +7,41 @@ const {
 } = require('../utils/validations/user')
 const { ResponseError } = require('../utils/errors')
 const { JWT_SECRET } = require('../config')
+const { encript, compare } = require('../utils/decode')
+const { Op } = require('sequelize')
 
 class UserController {
   static async register (req, res) {
-    const user = validationUser(req.body)
+    const userInfo = validationUser(req.body)
 
     try {
       const isExist = await User.findOne({
-        where: { username: user.data.username }
+        where: {
+          [Op.or]: [
+            { username: userInfo.data.username },
+            { email: userInfo.data.email }
+          ]
+        }
       })
 
       if (isExist) {
         throw new ResponseError({ message: 'User already exists', status: 400 })
       }
 
-      if (!user.success) {
+      if (!userInfo.success) {
+        const message =
+          'error creating user: ' +
+          userInfo.error.errors
+            .map((atb) => `${atb.path} - ${atb.message} `)
+            .join(', ')
+
         throw new ResponseError({
-          message: user.error,
+          message,
           status: 400
         })
       }
 
-      const saltOrRounds = 10
-      const passwordHash = await bcrypt.hash(user.data.password, saltOrRounds)
+      const passwordHash = await encript(userInfo.data.password)
 
       const newUser = await User.create({
         ...req.body,
@@ -47,21 +58,21 @@ class UserController {
   }
 
   static async login (req, res) {
-    const user = validationPartialUser(req.body)
+    const userInfo = validationPartialUser(req.body)
 
     try {
       const userDb = await User.findOne({
-        where: { username: user.data.username }
+        where: { username: userInfo.data.username }
       })
 
       const passwordCorrect =
         userDb === null
           ? false
-          : await bcrypt.compare(user.data.password, userDb.password)
+          : await compare(userInfo.data.password, userDb.password)
 
       if (!userDb || !passwordCorrect) {
         throw new ResponseError({
-          message: 'Invalid user or password',
+          message: 'Invalid username, email or password',
           status: 401
         })
       }
@@ -71,7 +82,7 @@ class UserController {
 
       const token = jwt.sign(userJSON, JWT_SECRET)
 
-      res.status(200).json({ token, user: userJSON })
+      res.status(200).json({ token, userFound: userJSON })
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }
@@ -82,11 +93,56 @@ class UserController {
     const info = validationPartialUser(req.body)
 
     try {
-      const user = await userExists(idUser)
+      if (!info.success) {
+        const message =
+          'error updating user: ' +
+          info.error.errors
+            .map((atb) => `${atb.path} - ${atb.message}`)
+            .join(', ')
 
-      const userUpdated = await user.update(info.data)
+        throw new ResponseError({
+          message,
+          status: 403
+        })
+      }
+
+      if (info.data.password) {
+        info.data.password = await encript(info.data.password)
+      }
+
+      const userFound = await userExists(idUser)
+
+      const userUpdated = await userFound.update(info.data)
 
       res.json(userUpdated)
+    } catch (error) {
+      console.log(error.message)
+
+      res.status(error.status || 500).json({ message: error.message })
+    }
+  }
+
+  static async softDelete (req, res) {
+    const { idUser } = req.params
+    try {
+      const userFound = await userExists(idUser)
+
+      await userFound.destroy()
+
+      res.status(200).json({ message: 'user soft deleted successfully' })
+    } catch (error) {
+      res.status(error.status || 500).json({ message: error.message })
+    }
+  }
+
+  static async restore (req, res) {
+    const { idUser } = req.params
+    try {
+      const userFound = await userExists(idUser)
+
+      await userFound.restore()
+
+      res.status(200).json({ message: 'user soft deleted successfully' })
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }
@@ -106,9 +162,9 @@ class UserController {
     const { idUser } = req.params
 
     try {
-      const user = await userExists(idUser)
+      const userFound = await userExists(idUser)
 
-      const userJSON = user.toJSON()
+      const userJSON = userFound.toJSON()
       delete userJSON.password
 
       res.json(userJSON)

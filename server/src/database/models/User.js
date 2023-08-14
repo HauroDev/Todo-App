@@ -24,7 +24,9 @@ module.exports = (sequelize) => {
         unique: true,
         allowNull: false,
         validate: {
-          isEmail: true
+          isEmail: {
+            msg: 'please enter a valid email address'
+          }
         }
       },
       firstname: {
