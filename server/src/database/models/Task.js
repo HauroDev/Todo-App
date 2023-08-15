@@ -23,7 +23,7 @@ module.exports = (sequelize) => {
         allowNull: true
       },
       steps: {
-        type: DataTypes.ARRAY(DataTypes.STRING(255)),
+        type: DataTypes.ARRAY(DataTypes.JSON()),
         allowNull: true
       }
     },

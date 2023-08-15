@@ -1,4 +1,3 @@
-const { List } = require('../database/db')
 const { ResponseError } = require('../utils/errors')
 const {
   validationList,
@@ -31,13 +30,15 @@ class ListController {
     try {
       const userFound = await userExists(idUser)
 
-      const [list] = await userFound.getLists({ where: { id_list: idList } })
+      const [listFound] = await userFound.getLists({
+        where: { id_list: idList }
+      })
 
-      if (!list) {
+      if (!listFound) {
         throw new ResponseError({ message: 'List not found', status: 404 })
       }
 
-      res.status(200).json(list)
+      res.status(200).json(listFound)
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }
@@ -105,16 +106,12 @@ class ListController {
     const { idUser, idList } = req.params
 
     try {
-      await userExists(idUser)
+      const userFound = await userExists(idUser)
 
-      const listFound = await List.findByPk(idList, { paranoid: false })
-
-      if (listFound.toJSON().id_user !== idUser) {
-        throw new ResponseError({
-          message: 'this list is not owned by the user',
-          status: 403
-        })
-      }
+      const listFound = await userFound.getLists({
+        where: { id_list: idList },
+        paranoid: false
+      })
 
       await listFound.restore({ where: { id_list: idList } })
 
