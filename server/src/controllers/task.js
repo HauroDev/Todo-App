@@ -105,7 +105,9 @@ class TaskController {
         throw new ResponseError({ message: 'Task not found', status: 404 })
       }
 
-      const taskUpdated = await taskFound.update(taskInfo.data)
+      const taskUpdated = await taskFound.update(taskInfo.data, {
+        where: { id_task: idTask }
+      })
 
       res.status(200).json(taskUpdated)
     } catch (error) {

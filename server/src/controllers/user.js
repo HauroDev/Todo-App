@@ -90,13 +90,13 @@ class UserController {
 
   static async update (req, res) {
     const { idUser } = req.params
-    const info = validationPartialUser(req.body)
+    const userInfo = validationPartialUser(req.body)
 
     try {
-      if (!info.success) {
+      if (!userInfo.success) {
         const message =
           'error updating user: ' +
-          info.error.errors
+          userInfo.error.errors
             .map((atb) => `${atb.path} - ${atb.message}`)
             .join(', ')
 
@@ -106,13 +106,15 @@ class UserController {
         })
       }
 
-      if (info.data.password) {
-        info.data.password = await encript(info.data.password)
+      if (userInfo.data.password) {
+        userInfo.data.password = await encript(userInfo.data.password)
       }
 
       const userFound = await userExists(idUser)
 
-      const userUpdated = await userFound.update(info.data)
+      const userUpdated = await userFound.update(userInfo.data, {
+        where: { id_user: idUser }
+      })
 
       res.json(userUpdated)
     } catch (error) {
