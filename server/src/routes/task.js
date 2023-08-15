@@ -3,9 +3,9 @@ const TaskController = require('../controllers/task')
 
 const router = Router()
 
-router.get('/:idUser/:idList/all', TaskController.getAll)
 router.post('/:idUser/:idList/create', TaskController.create)
 
+router.get('/:idUser/:idList/all', TaskController.getAll)
 router.get('/:idUser/:idList/:idTask', TaskController.getById)
 
 router.put('/:idUser/:idList/:idTask/update', TaskController.update)

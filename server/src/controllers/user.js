@@ -58,7 +58,7 @@ class UserController {
   }
 
   static async login (req, res) {
-    const userInfo = validationPartialUser(req.body)
+    const userInfo = validationPartialUser(req.query)
 
     try {
       const userDb = await User.findOne({
