@@ -1,5 +1,8 @@
 const { ResponseError } = require('../utils/errors')
-const { validationTask } = require('../utils/validations/task')
+const {
+  validationTask,
+  validationPartialTask
+} = require('../utils/validations/task')
 const { userExists } = require('../utils/validations/user')
 
 class TaskController {
@@ -74,6 +77,37 @@ class TaskController {
       const newTask = await listFound.createTask(taskInfo.data)
 
       res.status(200).json(newTask)
+    } catch (error) {
+      res.status(error.status || 500).json({ message: error.message })
+    }
+  }
+
+  static async update (req, res) {
+    const { idUser, idList, idTask } = req.params
+    const taskInfo = validationPartialTask(req.body)
+    try {
+      const userFound = await userExists(idUser)
+
+      const [listFound] = await userFound.getLists({
+        where: { id_list: idList }
+      })
+
+      if (!listFound) {
+        throw new ResponseError({ message: 'List not found', status: 404 })
+      }
+
+      const [taskFound] = await listFound.getTasks({
+        where: { id_task: idTask },
+        paranoid: false
+      })
+
+      if (!taskFound) {
+        throw new ResponseError({ message: 'Task not found', status: 404 })
+      }
+
+      const taskUpdated = await taskFound.update(taskInfo.data)
+
+      res.status(200).json(taskUpdated)
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }

@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize')
-const { PG_NAME, PG_USER, PG_PASS, PG_HOST } = require('../config')
+const { PG_NAME, PG_USER, PG_PASS, PG_HOST } = require('./config')
 const { readdirSync } = require('fs')
 const path = require('path')
 const modelsDir = path.join(__dirname, 'models')

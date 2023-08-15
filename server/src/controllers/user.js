@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const { User } = require('../database/db')
+const { User } = require('../db')
 const {
   validationPartialUser,
   validationUser,

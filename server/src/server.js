@@ -2,10 +2,10 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 
-const { db } = require('./database/db')
+const { db } = require('./db')
 const { PORT } = require('./config')
 
-const routerApp = require('./routers/router')
+const routerApp = require('./router')
 
 class Server {
   constructor () {

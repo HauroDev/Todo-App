@@ -1,5 +1,5 @@
 const { z } = require('zod')
-const { User } = require('../../database/db')
+const { User } = require('../../db')
 const { ResponseError } = require('../errors')
 
 const UserSchema = z.object({
