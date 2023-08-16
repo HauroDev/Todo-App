@@ -6,8 +6,15 @@ const {
 } = require('../utils/validations/list')
 
 class ListController {
-  static async getAll (_req, res) {
-    const lists = await List.findAll()
+  static async getAll (req, res) {
+    const { idUser } = req.query
+
+    const Options = {
+      where: idUser ? { id_user: idUser } : undefined
+    }
+
+    const lists = await List.findAll(Options)
+
     res.status(200).json(lists)
   }
 

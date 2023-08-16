@@ -165,14 +165,14 @@ class UserController {
     }
   }
 
-  static async getAll (_req, res) {
+  static async getAll (req, res) {
     const users = await User.findAll({
       attributes: {
         exclude: ['password']
       }
     })
 
-    res.json(users)
+    res.status(200).json(users)
   }
 
   static async getById (req, res) {

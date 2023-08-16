@@ -6,8 +6,14 @@ const {
 } = require('../utils/validations/group')
 
 class GroupController {
-  static async getAll (_req, res) {
-    const groups = await Group.findAll()
+  static async getAll (req, res) {
+    const { idUser } = req.query
+
+    const Options = {
+      where: idUser ? { id_user: idUser } : undefined
+    }
+
+    const groups = await Group.findAll(Options)
 
     res.status(200).json(groups)
   }
@@ -36,12 +42,10 @@ class GroupController {
           .map((err) => `${err.path} ${err.message}`)
           .join('\n')
 
-        console.log(groupInfo.error)
-
         throw new ResponseError({ message, status: 400 })
       }
 
-      const newGroup = await Group.create(groupInfo)
+      const newGroup = await Group.create(groupInfo.data)
 
       res.status(200).json(newGroup)
     } catch (error) {

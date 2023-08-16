@@ -6,8 +6,14 @@ const {
 } = require('../utils/validations/task')
 
 class TaskController {
-  static async getAll (_req, res) {
-    const tasks = await Task.findAll()
+  static async getAll (req, res) {
+    const { idUser } = req.query
+
+    const Options = {
+      where: idUser ? { id_user: idUser } : undefined
+    }
+
+    const tasks = await Task.findAll(Options)
 
     res.status(200).json(tasks)
   }
@@ -42,13 +48,10 @@ class TaskController {
         })
       }
 
-      console.log(taskInfo.data)
-
       const newTask = await Task.create(taskInfo.data)
 
       res.status(200).json(newTask)
     } catch (error) {
-      console.log(error)
       res.status(error.status || 500).json({ message: error.message })
     }
   }
@@ -64,7 +67,9 @@ class TaskController {
         throw new ResponseError({ message: 'Task not found', status: 404 })
       }
 
-      const taskUpdated = await Task.update(taskInfo.data, { paranoid: false })
+      const taskUpdated = await taskFound.update(taskInfo.data, {
+        paranoid: false
+      })
 
       res.status(200).json(taskUpdated)
     } catch (error) {

@@ -8,18 +8,7 @@ const { PORT } = require('./config')
 const routerApp = require('./router')
 
 class Server {
-  constructor () {
-    this.app = express()
-
-    this.connectWithdb()
-      .then(() => {
-        this.middlewares()
-        this.methods()
-      })
-      .catch((error) => console.error(error))
-  }
-
-  middlewares () {
+  static middlewares () {
     this.app.disable('x-powered-by')
     this.app.use(morgan('dev'))
     this.app.use(cors({ origin: '*' }))
@@ -28,30 +17,36 @@ class Server {
     this.app.use('/api/v1', routerApp)
   }
 
-  methods () {
+  static methods () {
     this.app.get('/', (_req, res) => {
       res.send('Hello World!')
     })
   }
 
-  async connectWithdb () {
+  static async connectWithdb () {
     try {
       await db.sync()
-      console.log('database connection successfully')
+      console.log('database connection successfully\n')
     } catch (error) {
       console.log(error)
     }
   }
 
-  start () {
-    this.app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`)
-      console.log('url: http://localhost:' + PORT)
-      console.log('Press Ctrl+C to stop\n')
-    })
+  static start () {
+    this.app = express()
+
+    this.connectWithdb()
+      .then(() => {
+        this.middlewares()
+        this.methods()
+        this.app.listen(PORT, () => {
+          console.log(`Server is running on port ${PORT}`)
+          console.log(`url: http://localhost:${PORT}`)
+          console.log('Press Ctrl+C to stop')
+        })
+      })
+      .catch((error) => console.error(error))
   }
 }
 
-const server = new Server()
-
-server.start()
+Server.start()
