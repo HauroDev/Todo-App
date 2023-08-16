@@ -1,48 +1,25 @@
+const { List, Task } = require('../db')
 const { ResponseError } = require('../utils/errors')
 const {
   validationTask,
   validationPartialTask
 } = require('../utils/validations/task')
-const { userExists } = require('../utils/validations/user')
 
 class TaskController {
-  static async getAll (req, res) {
-    const { idUser, idList } = req.params
-    try {
-      const userFound = await userExists(idUser)
+  static async getAll (_req, res) {
+    const tasks = await Task.findAll()
 
-      const [listFound] = await userFound.getLists({
-        where: { id_list: idList }
-      })
-
-      if (!listFound) {
-        throw new ResponseError({ message: 'List not found', status: 404 })
-      }
-
-      const tasks = await listFound.getTasks()
-
-      res.status(200).json(tasks)
-    } catch (error) {
-      res.status(error.status || 500).json({ message: error.message })
-    }
+    res.status(200).json(tasks)
   }
 
   static async getById (req, res) {
-    const { idUser, idList, idTask } = req.params
+    const { idTask } = req.params
     try {
-      const userFound = await userExists(idUser)
+      const taskFound = await Task.findByPk(idTask)
 
-      const [listFound] = await userFound.getLists({
-        where: { id_list: idList }
-      })
-
-      if (!listFound) {
-        throw new ResponseError({ message: 'List not found', status: 404 })
+      if (!taskFound) {
+        throw new ResponseError({ message: 'Task not found', status: 404 })
       }
-
-      const [taskFound] = await listFound.getTasks({
-        where: { id_task: idTask }
-      })
 
       res.status(200).json(taskFound)
     } catch (error) {
@@ -51,22 +28,13 @@ class TaskController {
   }
 
   static async create (req, res) {
-    const { idUser, idList } = req.params
     const taskInfo = validationTask(req.body)
 
     try {
-      const userFound = await userExists(idUser)
-
-      const [listFound] = await userFound.getLists({
-        where: { id_list: idList }
-      })
-
       if (!taskInfo.success) {
-        const message =
-          'error creating user: ' +
-          taskInfo.error.errors
-            .map((atb) => `${atb.path} - ${atb.message} `)
-            .join(', ')
+        const message = taskInfo.error.errors
+          .map((atb) => `${atb.path} ${atb.message}`)
+          .join('\n')
 
         throw new ResponseError({
           message,
@@ -74,40 +42,29 @@ class TaskController {
         })
       }
 
-      const newTask = await listFound.createTask(taskInfo.data)
+      console.log(taskInfo.data)
+
+      const newTask = await Task.create(taskInfo.data)
 
       res.status(200).json(newTask)
     } catch (error) {
+      console.log(error)
       res.status(error.status || 500).json({ message: error.message })
     }
   }
 
   static async update (req, res) {
-    const { idUser, idList, idTask } = req.params
+    const { idTask } = req.params
     const taskInfo = validationPartialTask(req.body)
+
     try {
-      const userFound = await userExists(idUser)
-
-      const [listFound] = await userFound.getLists({
-        where: { id_list: idList }
-      })
-
-      if (!listFound) {
-        throw new ResponseError({ message: 'List not found', status: 404 })
-      }
-
-      const [taskFound] = await listFound.getTasks({
-        where: { id_task: idTask },
-        paranoid: false
-      })
+      const taskFound = await Task.findByPk(idTask, { paranoid: false })
 
       if (!taskFound) {
         throw new ResponseError({ message: 'Task not found', status: 404 })
       }
 
-      const taskUpdated = await taskFound.update(taskInfo.data, {
-        where: { id_task: idTask }
-      })
+      const taskUpdated = await Task.update(taskInfo.data, { paranoid: false })
 
       res.status(200).json(taskUpdated)
     } catch (error) {
@@ -116,22 +73,10 @@ class TaskController {
   }
 
   static async softDelete (req, res) {
-    const { idUser, idList, idTask } = req.params
+    const { idTask } = req.params
 
     try {
-      const userFound = await userExists(idUser)
-
-      const [listFound] = await userFound.getLists({
-        where: { id_list: idList }
-      })
-
-      if (!listFound) {
-        throw new ResponseError({ message: 'List not found', status: 404 })
-      }
-
-      const [taskFound] = await listFound.getTasks({
-        where: { id_task: idTask }
-      })
+      const taskFound = await Task.findByPk(idTask)
 
       if (!taskFound) {
         throw new ResponseError({ message: 'Task not found', status: 404 })
@@ -146,23 +91,10 @@ class TaskController {
   }
 
   static async restore (req, res) {
-    const { idUser, idList, idTask } = req.params
+    const { idTask } = req.params
 
     try {
-      const userFound = await userExists(idUser)
-
-      const [listFound] = await userFound.getLists({
-        where: { id_list: idList }
-      })
-
-      if (!listFound) {
-        throw new ResponseError({ message: 'List not found', status: 404 })
-      }
-
-      const [taskFound] = await listFound.getTasks({
-        where: { id_task: idTask },
-        paranoid: false
-      })
+      const taskFound = await Task.findByPk(idTask, { paranoid: false })
 
       if (!taskFound) {
         throw new ResponseError({ message: 'Task not found', status: 404 })
@@ -171,6 +103,42 @@ class TaskController {
       await taskFound.restore()
 
       res.status(200).json({ message: 'task restored successfully' })
+    } catch (error) {
+      res.status(error.status || 500).json({ message: error.message })
+    }
+  }
+
+  static async changeList (req, res) {
+    const { idTask } = req.params
+
+    const { idOrigin, idDestination } = req.query
+
+    try {
+      const originListFound = await List.findByPk(idOrigin)
+
+      if (!originListFound) {
+        throw new ResponseError({ message: ' lists not found', status: 404 })
+      }
+
+      const destinationListFound = await List.findByPk(idDestination)
+
+      if (!destinationListFound) {
+        throw new ResponseError({ message: ' lists not found', status: 404 })
+      }
+
+      const [taskFound] = await originListFound.getTasks({
+        where: { id_task: idTask },
+        paranoid: false
+      })
+
+      if (!taskFound) {
+        throw new ResponseError({ message: 'task not found', status: 404 })
+      }
+
+      await originListFound.removeTask(taskFound)
+      await destinationListFound.addTask(taskFound)
+
+      res.status(200).json({ message: 'task was changed list successfully' })
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }

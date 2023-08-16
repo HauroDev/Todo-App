@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken')
 const { User } = require('../db')
 const {
   validationPartialUser,
-  validationUser,
-  userExists
+  validationUser
 } = require('../utils/validations/user')
+
 const { ResponseError } = require('../utils/errors')
 const { JWT_SECRET } = require('../config')
 const { encript, compare } = require('../utils/decode')
@@ -29,11 +29,9 @@ class UserController {
       }
 
       if (!userInfo.success) {
-        const message =
-          'error creating user: ' +
-          userInfo.error.errors
-            .map((atb) => `${atb.path} - ${atb.message} `)
-            .join(', ')
+        const message = userInfo.error.errors
+          .map((atb) => `${atb.path} - ${atb.message} `)
+          .join(', ')
 
         throw new ResponseError({
           message,
@@ -61,6 +59,14 @@ class UserController {
     const userInfo = validationPartialUser(req.query)
 
     try {
+      if (!userInfo.success) {
+        const message = userInfo.error.errors
+          .map((err) => `${err.path} ${err.message}`)
+          .join('\n')
+
+        throw new ResponseError({ message, status: 400 })
+      }
+
       const userDb = await User.findOne({
         where: { username: userInfo.data.username }
       })
@@ -110,24 +116,29 @@ class UserController {
         userInfo.data.password = await encript(userInfo.data.password)
       }
 
-      const userFound = await userExists(idUser)
+      const userFound = await User.findByPk(idUser)
 
-      const userUpdated = await userFound.update(userInfo.data, {
-        where: { id_user: idUser }
-      })
+      if (!userFound) {
+        throw new ResponseError({ message: 'User not found', status: 404 })
+      }
 
-      res.json(userUpdated)
+      const userUpdated = await userFound.update(userInfo.data)
+
+      res.status(200).json(userUpdated)
     } catch (error) {
-      console.log(error.message)
-
       res.status(error.status || 500).json({ message: error.message })
     }
   }
 
   static async softDelete (req, res) {
     const { idUser } = req.params
+
     try {
-      const userFound = await userExists(idUser)
+      const userFound = await User.findByPk(idUser)
+
+      if (!userFound) {
+        throw new ResponseError({ message: 'User not found', status: 404 })
+      }
 
       await userFound.destroy()
 
@@ -140,7 +151,11 @@ class UserController {
   static async restore (req, res) {
     const { idUser } = req.params
     try {
-      const userFound = await userExists(idUser)
+      const userFound = await User.findByPk(idUser, { paranoid: false })
+
+      if (!userFound) {
+        throw new ResponseError({ message: 'User not found', status: 404 })
+      }
 
       await userFound.restore()
 
@@ -151,25 +166,29 @@ class UserController {
   }
 
   static async getAll (_req, res) {
-    const allUsers = await User.findAll({
+    const users = await User.findAll({
       attributes: {
         exclude: ['password']
       }
     })
 
-    res.json(allUsers)
+    res.json(users)
   }
 
   static async getById (req, res) {
     const { idUser } = req.params
 
     try {
-      const userFound = await userExists(idUser)
+      const userFound = await User.findByPk(idUser)
+
+      if (!userFound) {
+        throw new ResponseError({ message: 'User not found', status: 404 })
+      }
 
       const userJSON = userFound.toJSON()
       delete userJSON.password
 
-      res.json(userJSON)
+      res.status(200).json(userJSON)
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }

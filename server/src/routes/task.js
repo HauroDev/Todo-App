@@ -3,13 +3,14 @@ const TaskController = require('../controllers/task')
 
 const router = Router()
 
-router.post('/:idUser/:idList/create', TaskController.create)
+router.post('/create', TaskController.create)
 
-router.get('/:idUser/:idList/all', TaskController.getAll)
-router.get('/:idUser/:idList/:idTask', TaskController.getById)
+router.get('/all', TaskController.getAll)
+router.get('/:idTask', TaskController.getById)
 
-router.put('/:idUser/:idList/:idTask/update', TaskController.update)
-router.put('/:idUser/:idList/:idTask/delete', TaskController.softDelete)
-router.put('/:idUser/:idList/:idTask/restore', TaskController.restore)
+router.put('/update/:idTask', TaskController.update)
+router.put('/delete/:idTask', TaskController.softDelete)
+router.put('/restore/:idTask', TaskController.restore)
+// router.put('/change-list/:idTask', TaskController.changeList)
 
 module.exports = router

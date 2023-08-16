@@ -9,8 +9,8 @@ router.get('/sign-in', UserController.login)
 router.get('/all', UserController.getAll)
 router.get('/:idUser', UserController.getById)
 
-router.put('/:idUser/update', UserController.update)
-router.put('/:idUser/delete', UserController.softDelete)
-router.put('/:idUser/restore', UserController.restore)
+router.put('/update/:idUser', UserController.update)
+router.put('/delete/:idUser', UserController.softDelete)
+router.put('/restore/:idUser', UserController.restore)
 
 module.exports = router

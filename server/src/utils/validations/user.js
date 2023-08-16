@@ -1,6 +1,4 @@
 const { z } = require('zod')
-const { User } = require('../../db')
-const { ResponseError } = require('../errors')
 
 const UserSchema = z.object({
   username: z
@@ -22,20 +20,10 @@ const validationUser = (user) => {
 }
 
 const validationPartialUser = (user) => {
-  return UserSchema.partial().safeParse(user)
-}
-
-const userExists = async (id) => {
-  const userFound = await User.findByPk(id, { paranoid: false })
-
-  if (!userFound) {
-    throw new ResponseError({ message: 'User not found', status: 404 })
-  }
-  return userFound
+  return UserSchema.partial({ email: true }).safeParse(user)
 }
 
 module.exports = {
-  userExists,
   validationUser,
   validationPartialUser
 }

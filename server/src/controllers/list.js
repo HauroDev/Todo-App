@@ -1,38 +1,21 @@
+const { List, Group } = require('../db')
 const { ResponseError } = require('../utils/errors')
 const {
   validationList,
   validationPartialList
 } = require('../utils/validations/list')
-const { userExists } = require('../utils/validations/user')
 
 class ListController {
-  static async getAll (req, res) {
-    const { idUser } = req.params
-
-    try {
-      const userFound = await userExists(idUser)
-
-      const lists = await userFound.getLists()
-
-      if (!lists.length) {
-        throw new ResponseError({ message: "User hasn't lists", status: 403 })
-      }
-
-      res.status(200).json(lists)
-    } catch (error) {
-      res.status(error.status || 500).json({ message: error.message })
-    }
+  static async getAll (_req, res) {
+    const lists = await List.findAll()
+    res.status(200).json(lists)
   }
 
   static async getById (req, res) {
-    const { idUser, idList } = req.params
+    const { idList } = req.params
 
     try {
-      const userFound = await userExists(idUser)
-
-      const [listFound] = await userFound.getLists({
-        where: { id_list: idList }
-      })
+      const listFound = await List.findByPk(idList)
 
       if (!listFound) {
         throw new ResponseError({ message: 'List not found', status: 404 })
@@ -45,14 +28,20 @@ class ListController {
   }
 
   static async create (req, res) {
-    const { idUser } = req.params
     const listInfo = validationList(req.body)
 
     try {
-      const userFound = await userExists(idUser)
+      if (!listInfo.success) {
+        const message = listInfo.error.errors
+          .map((err) => `${err.path} ${err.message}`)
+          .join('\n')
 
-      const newList = await userFound.createList(listInfo.data)
+        console.log(listInfo.error)
 
+        throw new ResponseError({ message, status: 400 })
+      }
+
+      const newList = await List.create(listInfo.data)
       res.status(201).json(newList)
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
@@ -60,21 +49,17 @@ class ListController {
   }
 
   static async update (req, res) {
-    const { idList, idUser } = req.params
-    const info = validationPartialList(req.body)
+    const { idList } = req.params
+    const listInfo = validationPartialList(req.body)
 
     try {
-      const userFound = await userExists(idUser)
+      const listFound = await List.findByPk(idList)
 
-      const [list] = await userFound.getLists({ where: { id_list: idList } })
-
-      if (!list) {
+      if (!listFound) {
         throw new ResponseError({ message: 'list not found', status: 404 })
       }
 
-      const listUpdated = await list.update(info.data, {
-        where: { id_list: idList }
-      })
+      const listUpdated = await listFound.update(listInfo.data)
 
       res.status(200).json(listUpdated)
     } catch (error) {
@@ -83,18 +68,16 @@ class ListController {
   }
 
   static async softDelete (req, res) {
-    const { idUser, idList } = req.params
+    const { idList } = req.params
 
     try {
-      const userFound = await userExists(idUser)
+      const listFound = await List.findByPk(idList)
 
-      const [list] = await userFound.getLists({ where: { id_list: idList } })
-
-      if (!list) {
+      if (!listFound) {
         throw new ResponseError({ message: 'List not found', status: 404 })
       }
 
-      await list.destroy()
+      await listFound.destroy()
 
       res.status(200).json({ message: 'soft deleted list' })
     } catch (error) {
@@ -103,19 +86,50 @@ class ListController {
   }
 
   static async restore (req, res) {
-    const { idUser, idList } = req.params
+    const { idList } = req.params
 
     try {
-      const userFound = await userExists(idUser)
-
-      const listFound = await userFound.getLists({
-        where: { id_list: idList },
+      const listFound = await List.findByPk(idList, {
         paranoid: false
       })
 
-      await listFound.restore({ where: { id_list: idList } })
+      if (!listFound) {
+        throw new ResponseError({ message: 'List not found', status: 404 })
+      }
+
+      await listFound.restore()
 
       res.status(200).json({ message: 'list restored' })
+    } catch (error) {
+      res.status(error.status || 500).json({ message: error.message })
+    }
+  }
+
+  static async changeGroup (req, res) {
+    const { idList } = req.params
+    const { idOrigin, idDestination } = req.body
+
+    try {
+      const originGroupFound = await Group.findByPk(idOrigin)
+
+      if (!originGroupFound) {
+        throw new ResponseError({ message: 'origin group not found' })
+      }
+
+      const destinationGroupFound = await Group.findByPk(idDestination)
+
+      if (!destinationGroupFound) {
+        throw new ResponseError({ message: 'destination group not found' })
+      }
+
+      const listFound = await List.findByPk(idList, {
+        paranoid: false
+      })
+
+      await originGroupFound.removeGroup(listFound)
+      await destinationGroupFound.addGroup(listFound)
+
+      res.status(200).json({ message: 'list changed groups successfully' })
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }

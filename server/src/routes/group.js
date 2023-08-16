@@ -3,13 +3,13 @@ const GroupController = require('../controllers/group')
 
 const router = Router()
 
-router.post('/:idUser/create', GroupController.create)
+router.post('/create', GroupController.create)
 
-router.get('/:idUser/all', GroupController.getAll)
-router.get('/:idUser/:idGroup', GroupController.getById)
+router.get('/all', GroupController.getAll)
+router.get('/:idGroup', GroupController.getById)
 
-router.put('/:idUser/:idGroup/update', GroupController.update)
-router.put('/:idUser/:idGroup/restore', GroupController.restore)
-router.put('/:idUser/:idGroup/delete', GroupController.softDelete)
+router.put('/update/:idGroup', GroupController.update)
+router.put('/restore/:idGroup', GroupController.restore)
+router.put('/delete/:idGroup', GroupController.softDelete)
 
 module.exports = router

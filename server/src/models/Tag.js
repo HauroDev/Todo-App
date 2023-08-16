@@ -1,9 +1,9 @@
 const { Model, DataTypes } = require('sequelize')
 
 module.exports = (sequelize) => {
-  class Task extends Model {}
+  class Tag extends Model {}
 
-  Task.init(
+  Tag.init(
     {
       id_tag: {
         type: DataTypes.INTEGER,
@@ -26,5 +26,5 @@ module.exports = (sequelize) => {
     }
   )
 
-  return Task
+  return Tag
 }

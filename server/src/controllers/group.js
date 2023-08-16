@@ -1,47 +1,21 @@
+const { Group } = require('../db')
 const { ResponseError } = require('../utils/errors')
-const { validationGroup, validationPartialGroup } = require('../utils/validations/group')
-const { userExists } = require('../utils/validations/user')
+const {
+  validationGroup,
+  validationPartialGroup
+} = require('../utils/validations/group')
 
 class GroupController {
-  static async getAll (req, res) {
-    const { idUser } = req.params
-    try {
-      const userFound = await userExists(idUser)
+  static async getAll (_req, res) {
+    const groups = await Group.findAll()
 
-      const groups = await userFound.getGroups()
-
-      if (!groups.length) {
-        throw new ResponseError({ message: "user hasn't groups", status: 400 })
-      }
-      res.status(200).json(groups)
-    } catch (error) {
-      res.status(error.status || 500).json({ message: error.message })
-    }
-  }
-
-  static async create (req, res) {
-    const { idUser } = req.params
-    const groupInfo = validationGroup(req.body)
-
-    try {
-      const userFound = await userExists(idUser)
-
-      const newGroup = await userFound.createGroup(groupInfo.data)
-
-      res.status(200).json(newGroup)
-    } catch (error) {
-      res.status(error.status || 500).json({ message: error.message })
-    }
+    res.status(200).json(groups)
   }
 
   static async getById (req, res) {
-    const { idUser, idGroup } = req.params
+    const { idGroup } = req.params
     try {
-      const userFound = await userExists(idUser)
-
-      const [groupFound] = await userFound.getGroups({
-        where: { id_group: idGroup }
-      })
+      const groupFound = await Group.findByPk(idGroup)
 
       if (!groupFound) {
         throw new ResponseError({ message: 'Group not found', status: 404 })
@@ -53,14 +27,32 @@ class GroupController {
     }
   }
 
-  static async softDelete (req, res) {
-    const { idUser, idGroup } = req.params
-    try {
-      const userFound = await userExists(idUser)
+  static async create (req, res) {
+    const groupInfo = validationGroup(req.body)
 
-      const [groupFound] = await userFound.getGroups({
-        where: { id_group: idGroup }
-      })
+    try {
+      if (!groupInfo.success) {
+        const message = groupInfo.error.errors
+          .map((err) => `${err.path} ${err.message}`)
+          .join('\n')
+
+        console.log(groupInfo.error)
+
+        throw new ResponseError({ message, status: 400 })
+      }
+
+      const newGroup = await Group.create(groupInfo)
+
+      res.status(200).json(newGroup)
+    } catch (error) {
+      res.status(error.status || 500).json({ message: error.message })
+    }
+  }
+
+  static async softDelete (req, res) {
+    const { idGroup } = req.params
+    try {
+      const groupFound = await Group.findByPk(idGroup)
 
       if (!groupFound) {
         throw new ResponseError({ message: 'Group not found', status: 404 })
@@ -75,12 +67,9 @@ class GroupController {
   }
 
   static async restore (req, res) {
-    const { idUser, idGroup } = req.params
+    const { idGroup } = req.params
     try {
-      const userFound = await userExists(idUser)
-
-      const [groupFound] = await userFound.getGroups({
-        where: { id_group: idGroup },
+      const groupFound = await Group.findByPk(idGroup, {
         paranoid: false
       })
 
@@ -97,14 +86,11 @@ class GroupController {
   }
 
   static async update (req, res) {
-    const { idUser, idGroup } = req.params
+    const { idGroup } = req.params
     const groupInfo = validationPartialGroup(req.body)
 
     try {
-      const userFound = await userExists(idUser)
-
-      const [groupFound] = await userFound.getGroups({
-        where: { id_group: idGroup },
+      const groupFound = await Group.findByPk(idGroup, {
         paranoid: false
       })
 
@@ -112,9 +98,7 @@ class GroupController {
         throw new ResponseError({ message: 'Group not found', status: 404 })
       }
 
-      const groupUpdate = await groupFound.update(groupInfo, {
-        where: { id_group: idGroup }
-      })
+      const groupUpdate = await groupFound.update(groupInfo)
 
       res.status(200).json(groupUpdate)
     } catch (error) {
