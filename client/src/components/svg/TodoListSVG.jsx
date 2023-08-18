@@ -7,7 +7,7 @@ const TodoListSVG = ({ className }) => {
       xmlns='http://www.w3.org/2000/svg'
       width='848.675'
       height='469.443'
-      data-name='Layer 1'
+      data-name='Todo List'
       viewBox='0 0 848.675 469.443'>
       <path
         fill='#f2f2f2'

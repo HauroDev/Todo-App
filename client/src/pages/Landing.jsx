@@ -1,4 +1,4 @@
-import TodoListSVG from '../components/TodoListSVG'
+import TodoListSVG from '../components/svg/TodoListSVG'
 
 const Landing = () => {
   return (

@@ -1,14 +1,19 @@
 import Footer from './components/Footer'
 import Header from './components/Header'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import Landing from './pages/Landing'
-import { routerName } from './utils/routes'
+import { routerName } from './utils/routes/appRoutes'
+import Login from './pages/login/Login'
 
 function App() {
+  const { pathname } = useLocation()
+
   return (
     <>
-      <Header />
-      <main className='flex-grow'>
+      {![routerName.login, routerName.register].includes(pathname) && (
+        <Header />
+      )}
+      <main className='flex flex-grow'>
         <Routes>
           <Route
             path={routerName.landing}
@@ -16,9 +21,7 @@ function App() {
           />
           <Route
             path={routerName.login}
-            element={
-              <div className='text-white text-center my-auto'>login</div>
-            }
+            element={<Login />}
           />
           <Route
             path={routerName.register}
