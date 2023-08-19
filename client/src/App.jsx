@@ -3,7 +3,8 @@ import Header from './components/Header'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import Landing from './pages/Landing'
 import { routerName } from './utils/routes/appRoutes'
-import Login from './pages/login/Login'
+import LoginForm from './pages/LoginForm'
+import RegisterForm from './pages/RegisterForm'
 
 function App() {
   const { pathname } = useLocation()
@@ -21,13 +22,11 @@ function App() {
           />
           <Route
             path={routerName.login}
-            element={<Login />}
+            element={<LoginForm />}
           />
           <Route
             path={routerName.register}
-            element={
-              <div className='text-white text-center my-auto'>register</div>
-            }
+            element={<RegisterForm />}
           />
         </Routes>
       </main>

@@ -1,18 +1,13 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-
-import { userAccessRequest } from '../../services/auth'
-
-const infoSchema = z.object({
-  username: z.string().nonempty({ message: 'falta nombre de usuario' }),
-  password: z.string().nonempty({ message: 'falta contraseña' })
-})
-
-import LoginSVG from '../../components/svg/LoginSVG'
 import { useNavigate } from 'react-router-dom'
 
-const Login = () => {
+import { loginRequest } from '../services/auth'
+import { LoginFormSchema } from './schemas/loginFormSchema'
+
+import LoginSVG from '../components/svg/LoginSVG'
+
+const LoginForm = () => {
   const {
     register,
     handleSubmit,
@@ -22,18 +17,23 @@ const Login = () => {
       username: '',
       password: ''
     },
-    resolver: zodResolver(infoSchema)
+    mode: 'onChange',
+    resolver: zodResolver(LoginFormSchema)
   })
 
   const navigate = useNavigate()
 
   const onSubmit = async (credentials) => {
-    const isAuthenticated = await userAccessRequest(credentials)
+    try {
+      const response = await loginRequest(credentials)
 
-    if (!isAuthenticated) alert('Login failed: user or password is incorrect')
-    else {
-      alert('Login successful')
-      navigate('/', { preventScrollReset: true })
+      if (response) {
+        alert('Login successfully')
+        navigate('/', { preventScrollReset: true })
+      }
+    } catch (error) {
+      // puedo usar una ventanita de error o setear un error en el formulario
+      alert(error.message)
     }
   }
 
@@ -99,4 +99,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default LoginForm
