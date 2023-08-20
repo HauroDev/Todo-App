@@ -11,7 +11,7 @@ const { encript, compare } = require('../utils/decode')
 const { Op } = require('sequelize')
 
 class UserController {
-  static async register (req, res) {
+  static async register(req, res) {
     const userInfo = validationUser(req.body)
 
     try {
@@ -55,7 +55,7 @@ class UserController {
     }
   }
 
-  static async login (req, res) {
+  static async login(req, res) {
     const userInfo = validationPartialUser(req.query)
 
     try {
@@ -88,20 +88,20 @@ class UserController {
 
       const token = jwt.sign(userJSON, JWT_SECRET)
 
-      res.status(200).json({ token, userFound: userJSON })
+      res.status(200).json({ token, userData: userJSON })
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }
   }
 
-  static async update (req, res) {
+  static async update(req, res) {
     const { idUser } = req.params
     const userInfo = validationPartialUser(req.body)
 
     try {
       if (!userInfo.success) {
         const message =
-          'error updating user: ' +
+          'error: ' +
           userInfo.error.errors
             .map((atb) => `${atb.path} - ${atb.message}`)
             .join(', ')
@@ -130,7 +130,7 @@ class UserController {
     }
   }
 
-  static async softDelete (req, res) {
+  static async softDelete(req, res) {
     const { idUser } = req.params
 
     try {
@@ -148,7 +148,7 @@ class UserController {
     }
   }
 
-  static async restore (req, res) {
+  static async restore(req, res) {
     const { idUser } = req.params
     try {
       const userFound = await User.findByPk(idUser, { paranoid: false })
@@ -165,7 +165,7 @@ class UserController {
     }
   }
 
-  static async getAll (req, res) {
+  static async getAll(_req, res) {
     const users = await User.findAll({
       attributes: {
         exclude: ['password']
@@ -175,20 +175,19 @@ class UserController {
     res.status(200).json(users)
   }
 
-  static async getById (req, res) {
+  static async getById(req, res) {
     const { idUser } = req.params
 
     try {
-      const userFound = await User.findByPk(idUser)
+      const userFound = await User.findByPk(idUser, {
+        attributes: { exclude: ['password'] }
+      })
 
       if (!userFound) {
         throw new ResponseError({ message: 'User not found', status: 404 })
       }
 
-      const userJSON = userFound.toJSON()
-      delete userJSON.password
-
-      res.status(200).json(userJSON)
+      res.status(200).json(userFound)
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }
