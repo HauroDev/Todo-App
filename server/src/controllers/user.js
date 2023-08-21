@@ -88,7 +88,7 @@ class UserController {
 
       const token = jwt.sign(userJSON, JWT_SECRET)
 
-      res.status(200).json({ token, userData: userJSON })
+      res.status(200).json({ token, dataUser: userJSON })
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }
