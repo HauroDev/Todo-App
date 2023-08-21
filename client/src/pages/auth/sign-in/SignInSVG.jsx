@@ -1,4 +1,4 @@
-const LoginSVG = ({ className }) => {
+const SignInSVG = ({ className }) => {
   return (
     <svg
       className={className}
@@ -75,4 +75,4 @@ const LoginSVG = ({ className }) => {
   )
 }
 
-export default LoginSVG
+export default SignInSVG

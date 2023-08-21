@@ -2,12 +2,15 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
 
-import { loginRequest } from '../services/auth'
-import { LoginFormSchema } from './schemas/loginFormSchema'
+import SignInSVG from './SignInSVG'
 
-import LoginSVG from '../components/svg/LoginSVG'
+import { SignInSchema } from './schema'
+import { useUserActions } from '../../../hooks/user/useUserActions'
+import { AppRoutes } from '../../../utils/routes/appRoutes'
 
-const LoginForm = () => {
+const SignInPage = () => {
+  const { loginUser } = useUserActions()
+
   const {
     register,
     handleSubmit,
@@ -18,23 +21,19 @@ const LoginForm = () => {
       password: ''
     },
     mode: 'onChange',
-    resolver: zodResolver(LoginFormSchema)
+    resolver: zodResolver(SignInSchema)
   })
 
   const navigate = useNavigate()
 
-  const onSubmit = async (credentials) => {
-    try {
-      const response = await loginRequest(credentials)
-
-      if (response) {
-        alert('Login successfully')
-        navigate('/', { preventScrollReset: true })
-      }
-    } catch (error) {
-      // puedo usar una ventanita de error o setear un error en el formulario
-      alert(error.message)
-    }
+  const onSubmit = (credentials) => {
+    loginUser(credentials)
+      .then(() => {
+        navigate(AppRoutes.landing)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   return (
@@ -45,7 +44,7 @@ const LoginForm = () => {
         <h2 className='text-center text-4xl sm:text-5xl text-gray-200 font-bold my-2'>
           ¡Bienvenido!
         </h2>
-        <LoginSVG className='w-40 m-auto mb-4' />
+        <SignInSVG className='w-40 m-auto mb-4' />
         <div className='flex flex-col gap-3'>
           <div className='flex flex-wrap mb-1'>
             <label
@@ -99,4 +98,4 @@ const LoginForm = () => {
   )
 }
 
-export default LoginForm
+export default SignInPage

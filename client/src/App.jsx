@@ -1,32 +1,43 @@
 import Footer from './components/Footer'
 import Header from './components/Header'
 import { Route, Routes, useLocation } from 'react-router-dom'
-import Landing from './pages/Landing'
-import { routerName } from './utils/routes/appRoutes'
-import LoginForm from './pages/LoginForm'
-import RegisterForm from './pages/RegisterForm'
+import Landing from './pages/landing/LandingPage'
 
-function App() {
+import ErrorPage from './pages/ErrorPage'
+import SignInPage from './pages/auth/sign-in/SignInPage'
+import SignUpPage from './pages/auth/sign-up/SignUpPage'
+import AuthContainer from './pages/auth/AuthContainer'
+import { AppRoutes } from './utils/routes/appRoutes'
+
+const App = () => {
   const { pathname } = useLocation()
 
   return (
     <>
-      {![routerName.login, routerName.register].includes(pathname) && (
+      {![AppRoutes.auth.signIn, AppRoutes.auth.signUp].includes(pathname) && (
         <Header />
       )}
       <main className='flex flex-grow'>
         <Routes>
           <Route
-            path={routerName.landing}
+            path={AppRoutes.landing}
             element={<Landing />}
           />
           <Route
-            path={routerName.login}
-            element={<LoginForm />}
-          />
+            path={AppRoutes.auth.base}
+            element={<AuthContainer />}>
+            <Route
+              path={AppRoutes.auth.signIn}
+              element={<SignInPage />}
+            />
+            <Route
+              path={AppRoutes.auth.signUp}
+              element={<SignUpPage />}
+            />
+          </Route>
           <Route
-            path={routerName.register}
-            element={<RegisterForm />}
+            path='*'
+            element={<ErrorPage />}
           />
         </Routes>
       </main>

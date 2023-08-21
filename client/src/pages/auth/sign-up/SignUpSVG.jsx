@@ -1,6 +1,4 @@
-import React from 'react'
-
-const RegisterSVG = ({ className }) => {
+const SignUpSVG = ({ className }) => {
   return (
     <svg
       className={className}
@@ -64,4 +62,4 @@ const RegisterSVG = ({ className }) => {
   )
 }
 
-export default RegisterSVG
+export default SignUpSVG
