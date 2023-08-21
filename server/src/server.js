@@ -6,24 +6,29 @@ const { db } = require('./db')
 const { PORT } = require('./config')
 
 const routerApp = require('./router')
+const cookieParser = require('cookie-parser')
 
 class Server {
-  static middlewares () {
+  static middlewares() {
     this.app.disable('x-powered-by')
+
     this.app.use(morgan('dev'))
-    this.app.use(cors({ origin: '*' }))
+
+    this.app.use(cookieParser())
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
+
+    this.app.use(cors({ origin: 'http://localhost:5173', credentials: true }))
     this.app.use('/api/v1', routerApp)
   }
 
-  static methods () {
+  static methods() {
     this.app.get('/', (_req, res) => {
       res.send('Hello World!')
     })
   }
 
-  static async connectWithdb () {
+  static async connectWithdb() {
     try {
       await db.sync()
       console.log('database connection successfully\n')
@@ -32,7 +37,7 @@ class Server {
     }
   }
 
-  static start () {
+  static start() {
     this.app = express()
 
     this.connectWithdb()

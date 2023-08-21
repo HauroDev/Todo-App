@@ -49,7 +49,11 @@ class UserController {
       const newUserJSON = newUser.toJSON()
       delete newUserJSON.password
 
-      res.status(201).json(newUserJSON)
+      const token = jwt.sign(newUserJSON, JWT_SECRET)
+
+      res.cookie('token', token)
+
+      res.status(201).json({ dataUser: newUserJSON })
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }
@@ -88,10 +92,16 @@ class UserController {
 
       const token = jwt.sign(userJSON, JWT_SECRET)
 
-      res.status(200).json({ token, dataUser: userJSON })
+      res.cookie('token', token)
+
+      res.status(200).json({ dataUser: userJSON })
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }
+  }
+
+  static logout(_req, res) {
+    res.clearCookie('token').sendStatus(200)
   }
 
   static async update(req, res) {
