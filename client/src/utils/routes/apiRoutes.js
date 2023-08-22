@@ -4,6 +4,18 @@ class ApiRoutes {
     this._userBase = '/user'
   }
 
+  get signIn() {
+    return `${this._backendUrl}/sign-in`
+  }
+
+  get signOut() {
+    return `${this._backendUrl}/sign-out`
+  }
+
+  get signUp() {
+    return `${this._backendUrl}/sign-up`
+  }
+
   get user() {
     const self = this
     return {
@@ -12,12 +24,6 @@ class ApiRoutes {
       },
       set base(newBase) {
         self._userBase = newBase
-      },
-      get signIn() {
-        return `${self._backendUrl}${self._userBase}/sign-in`
-      },
-      get signUp() {
-        return `${self._backendUrl}${self._userBase}/sign-up`
       }
     }
   }

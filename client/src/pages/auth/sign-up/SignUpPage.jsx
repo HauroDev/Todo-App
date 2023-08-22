@@ -7,7 +7,7 @@ import SignUpSVG from './SignUpSVG'
 
 import { signUpSchema } from './schema'
 import { AppRoutes } from '../../../utils/routes/appRoutes'
-import { useUserActions } from '../../../hooks/user/useUserActions'
+import { useUserActions } from '../../../hooks/useUserActions'
 
 const SignUpPage = () => {
   const { registerUser } = useUserActions()

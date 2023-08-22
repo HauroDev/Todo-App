@@ -1,24 +1,60 @@
 class AppRoutes {
   constructor() {
-    this._landing = '/'
-    this._authBase = '/auth'
+    this._root = '/'
+    this._home = '/home'
+    this._auth = '/auth'
+    this._profile = '/profile'
+    this._dashboard = '/dashboard'
   }
 
   get landing() {
-    return this._landing
+    return this._root
+  }
+
+  get home() {
+    const self = this
+    return {
+      get base() {
+        return self._home
+      },
+      get formTask() {
+        return `${self._home}/form-task`
+      }
+    }
+  }
+
+  get dashboard() {
+    const self = this
+    return {
+      get base() {
+        return self._dashboard
+      }
+    }
   }
 
   get auth() {
     const self = this
     return {
       get base() {
-        return self._authBase
+        return self._auth
       },
       get signUp() {
-        return `${self._authBase}/sign-up`
+        return `${self._auth}/sign-up`
       },
       get signIn() {
-        return `${self._authBase}/sign-in`
+        return `${self._auth}/sign-in`
+      }
+    }
+  }
+
+  get profile() {
+    const self = this
+    return {
+      get base() {
+        return self._profile
+      },
+      get edit() {
+        return `${self._profile}/edit`
       }
     }
   }
