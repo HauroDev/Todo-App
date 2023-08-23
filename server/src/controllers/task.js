@@ -6,11 +6,14 @@ const {
 } = require('../utils/validations/task')
 
 class TaskController {
-  static async getAll (req, res) {
+  static async getAll(req, res) {
     const { idUser } = req.query
 
     const Options = {
-      where: idUser ? { id_user: idUser } : undefined
+      where: idUser ? { id_user: idUser } : undefined,
+      attributes: {
+        exclude: ['description', 'steps']
+      }
     }
 
     const tasks = await Task.findAll(Options)
@@ -18,7 +21,7 @@ class TaskController {
     res.status(200).json(tasks)
   }
 
-  static async getById (req, res) {
+  static async getById(req, res) {
     const { idTask } = req.params
     try {
       const taskFound = await Task.findByPk(idTask)
@@ -33,7 +36,7 @@ class TaskController {
     }
   }
 
-  static async create (req, res) {
+  static async create(req, res) {
     const taskInfo = validationTask(req.body)
 
     try {
@@ -56,7 +59,7 @@ class TaskController {
     }
   }
 
-  static async update (req, res) {
+  static async update(req, res) {
     const { idTask } = req.params
     const taskInfo = validationPartialTask(req.body)
 
@@ -77,7 +80,7 @@ class TaskController {
     }
   }
 
-  static async softDelete (req, res) {
+  static async softDelete(req, res) {
     const { idTask } = req.params
 
     try {
@@ -95,7 +98,7 @@ class TaskController {
     }
   }
 
-  static async restore (req, res) {
+  static async restore(req, res) {
     const { idTask } = req.params
 
     try {
@@ -113,7 +116,7 @@ class TaskController {
     }
   }
 
-  static async changeList (req, res) {
+  static async changeList(req, res) {
     const { idTask } = req.params
 
     const { idOrigin, idDestination } = req.query

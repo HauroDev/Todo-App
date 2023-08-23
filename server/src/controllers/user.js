@@ -51,9 +51,7 @@ class UserController {
 
       const token = jwt.sign(newUserJSON, JWT_SECRET)
 
-      res.cookie('token', token)
-
-      res.status(201).json({ dataUser: newUserJSON })
+      res.status(200).json({ dataUser: newUserJSON, token, isSignedIn: true })
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }
@@ -92,16 +90,14 @@ class UserController {
 
       const token = jwt.sign(userJSON, JWT_SECRET)
 
-      res.cookie('token', token)
-
-      res.status(200).json({ dataUser: userJSON })
+      res.status(200).json({ dataUser: userJSON, token, isSignedIn: true })
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }
   }
 
   static logout(_req, res) {
-    res.clearCookie('token').sendStatus(200)
+    res.status(200).json({ message: 'Logged out', isSignedIn: false })
   }
 
   static async update(req, res) {

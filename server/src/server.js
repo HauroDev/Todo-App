@@ -6,7 +6,6 @@ const { db } = require('./db')
 const { PORT } = require('./config')
 
 const routerApp = require('./router')
-const cookieParser = require('cookie-parser')
 
 class Server {
   static middlewares() {
@@ -14,7 +13,6 @@ class Server {
 
     this.app.use(morgan('dev'))
 
-    this.app.use(cookieParser())
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
 
