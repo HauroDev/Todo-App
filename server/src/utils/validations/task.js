@@ -11,11 +11,11 @@ const TaskSchema = z.object({
       })
     )
     .optional(),
-  id_list: z.number(),
-  id_group: z.number().optional(),
+  // id_list: z.number(),
+  // id_group: z.number().optional(),
   id_user: z
     .string()
-    .uuid({ message: 'id_user needs to be in UUID format.' })
+    .uuid({ message: 'id_user needs to be in UUID format' })
     .nonempty({ message: 'id_user is required' })
 })
 

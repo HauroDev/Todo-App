@@ -28,7 +28,7 @@ class Server {
 
   static async connectWithdb() {
     try {
-      await db.sync()
+      await db.sync({ force: false})
       console.log('database connection successfully\n')
     } catch (error) {
       console.log(error)
