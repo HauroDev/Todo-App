@@ -6,7 +6,8 @@ import useModal from '../../../hooks/useModal'
 
 import TaskCard from './TaskCard'
 import TaskDetail from './TaskDetail'
-import CreateTask from './CreateTask'
+import CreateTask from './create/CreateTask'
+import CrossMark from './icons/CrossMark'
 
 const Tasks = () => {
   const {
@@ -30,18 +31,19 @@ const Tasks = () => {
       <h3 className='mt-4 text-3xl text-center'>Tareas</h3>
 
       <CreateTask />
-
       <ModalContainer>
-        <TaskDetail />
-        <button
-          className='block w-full rounded p-1 border-b-gray-950 hover:border-b-gray-200 active:border-b-gray-50 border-b-2 active:text-gray-500 active:border-gray-500 hover:bg-gray-600 duration-200'
-          onClick={() => {
-            clearTaskDetail().then(() => {
+        <div className='flex justify-between items-center'>
+          <h4 className='text-3xl'>Detalle de la tarea</h4>
+          <button
+            className='block w-fit rounded p-1 border-b-gray-950 hover:border-b-gray-200 active:border-b-gray-50 border-b-2 active:text-gray-500 active:border-gray-500 hover:bg-gray-600 duration-200'
+            onClick={async () => {
+              await clearTaskDetail()
               toggleModal()
-            })
-          }}>
-          Salir
-        </button>
+            }}>
+            <CrossMark />
+          </button>
+        </div>
+        <TaskDetail />
       </ModalContainer>
 
       <section className='flex-grow flex flex-col'>

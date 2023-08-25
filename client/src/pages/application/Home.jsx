@@ -10,7 +10,10 @@ const Home = () => {
       <h2 className='text-xl text-gray-100'>
         {`¡Bienvenido ${firstname} ${lastname}!`}
       </h2>
-      <div className='flex-grow w-[80%] lg:w-[70%]'></div>
+      <div className='flex-grow flex flex-col items-center mt-2 w-[80%] lg:w-[60%]'>
+        <h3>Holanda</h3>
+        <p>informacion de las tareas resumidas</p>
+      </div>
     </>
   )
 }
