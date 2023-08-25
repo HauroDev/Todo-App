@@ -1,0 +1,24 @@
+{
+  "id_task": 3,
+  "status": "pending",
+  "title": "tarea de prueba",
+  "description": "esto es una tarea de prueba, el objetivo es poder armar el ciclo de vida del componente para crear tareas",
+  "steps": [
+      {
+          "label": "cargar mockups en la db",
+          "status": "pending"
+      },
+      {
+          "label": "comprobar que el token de autorizacion funcione correctamente",
+          "status": "pending"
+      },
+      {
+          "label": "recordar que esto es una practica y no tiene por que ser perfecto",
+          "status": "pending"
+      }
+  ],
+  "id_user": "dc30d8dd-75f7-4bd6-9e0b-a157c6c75610",
+  "updatedAt": "2023-08-24T03:36:31.164Z",
+  "createdAt": "2023-08-24T03:36:31.164Z",
+  "deletedAt": null
+}

@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const DEFAULT_STATE = {
   isSignedIn: false,
-  dataUser: {}
+  dataUser: {},
+  token: ''
 }
 
 const initialState = (() => {

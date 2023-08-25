@@ -167,7 +167,7 @@ const SignUpPage = () => {
           </label>
           <input
             className='pl-1 w-full rounded text-gray-900 placeholder:text-gray-400'
-            placeholder='Joe'
+            type='password'
             {...register('password')}
           />
           <div
@@ -185,7 +185,7 @@ const SignUpPage = () => {
           </label>
           <input
             className='pl-1 w-full rounded text-gray-900 placeholder:text-gray-400'
-            placeholder='Doe'
+            type='password'
             {...register('passwordConfirmation')}
           />
           <div

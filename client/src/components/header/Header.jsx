@@ -5,7 +5,7 @@ import MenuWithLogin from './menus/menuWithLogin'
 import { useUserSelector } from '../../hooks/store'
 
 const Header = () => {
-  const { isSignedIn } = useUserSelector((state) => state.user)
+  const { isSignedIn } = useUserSelector()
 
   return (
     <header className='flex flex-row justify-between items-center bg-gray-800 text-gray-200 h-16 px-2'>

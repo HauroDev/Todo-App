@@ -1,8 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userReducer from './slices/userSlice'
 import tasksReducer from './slices/taskSlice'
-import listsReducer from './slices/listSlice'
-import groupsReducer from './slices/groupSlice'
 
 const persistUserData = (store) => (next) => (action) => {
   next(action)
@@ -12,9 +10,7 @@ const persistUserData = (store) => (next) => (action) => {
 export default configureStore({
   reducer: {
     user: userReducer,
-    tasks: tasksReducer,
-    lists: listsReducer,
-    groups: groupsReducer
+    task: tasksReducer
   },
   middleware: [persistUserData]
 })

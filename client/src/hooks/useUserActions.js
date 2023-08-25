@@ -9,7 +9,7 @@ export const useUserActions = () => {
   const loginUser = async (credentials) => {
     const urlLogin = ApiRoutes.signIn + '?' + new URLSearchParams(credentials)
     try {
-      const { data } = await axios.get(urlLogin, { withCredentials: true })
+      const { data } = await axios.get(urlLogin)
       const { token, dataUser } = data
 
       dispatch(signIn({ token, dataUser }))
@@ -20,7 +20,7 @@ export const useUserActions = () => {
 
   const logoutUser = async () => {
     try {
-      await axios.get(ApiRoutes.signOut, { withCredentials: true })
+      await axios.get(ApiRoutes.signOut)
 
       dispatch(signOut())
     } catch (error) {
@@ -30,9 +30,7 @@ export const useUserActions = () => {
 
   const registerUser = async (information) => {
     try {
-      const { data } = await axios.post(ApiRoutes.signUp, information, {
-        withCredentials: true
-      })
+      const { data } = await axios.post(ApiRoutes.signUp, information)
 
       dispatch(signUp(data))
     } catch (error) {

@@ -12,40 +12,52 @@ const initialState = (() => {
     return DEFAULT_STATE
   }
 
-  return JSON.parse(previousState).tasks
+  return JSON.parse(previousState).task
 })()
 
 export const taskSlice = createSlice({
-  name: 'tasks',
+  name: 'task',
   initialState,
   reducers: {
-    getAllTasks: (state, action) => {
+    getAll: (state, action) => {
       return { ...state, tasks: [...action.payload] }
     },
-    createTask: (state, action) => {
-      return { ...state, tasks: [...state.tasks, action.payload] }
-    },
-    getTaskDetail: (state, action) => {
+    getDetail: (state, action) => {
       return { ...state, taskDetail: action.payload }
     },
-    deleteTask: (state, action) => {
+    create: (state, action) => {
+      return { ...state, tasks: [...state.tasks, action.payload] }
+    },
+    clearDetail: (state) => {
+      return { ...state, taskDetail: {} }
+    },
+    clearAll: (state) => {
+      return { ...state, tasks: [] }
+    },
+    remove: (state, action) => {
       return {
         ...state,
         tasks: state.tasks.filter((task) => task.id !== action.payload.id)
       }
     },
-    restoreTask: (state, action) => {
+    restore: (state, action) => {
+      return { ...state, tasks: [...state.tasks, action.payload] }
+    },
+    update: (state, action) => {
       return { ...state, tasks: [...state.tasks, action.payload] }
     }
   }
 })
 
 export const {
-  createTask,
-  deleteTask,
-  getTaskDetail,
-  restoreTask,
-  getAllTasks
+  getAll,
+  clearDetail,
+  clearAll,
+  restore,
+  create,
+  remove,
+  update,
+  getDetail
 } = taskSlice.actions
 
 export default taskSlice.reducer

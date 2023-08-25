@@ -17,8 +17,8 @@ class AppRoutes {
       get base() {
         return self._home
       },
-      get formTask() {
-        return `${self._home}/form-task`
+      get Tasks() {
+        return `${self._home}/tasks`
       }
     }
   }

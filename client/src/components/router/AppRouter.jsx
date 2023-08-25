@@ -6,14 +6,19 @@ import { AppRoutes } from '../../utils/routes/appRoutes'
 import AuthContainer from '../../pages/auth/AuthContainer'
 import SignUpPage from '../../pages/auth/sign-up/SignUpPage'
 import SignInPage from '../../pages/auth/sign-in/SignInPage'
+
 import Landing from '../../pages/landing/LandingPage'
+
 import ErrorPage from '../../pages/ErrorPage'
-import Home from '../../pages/Home'
-import Tasks from '../../pages/Tasks'
+
+import Home from '../../pages/application/Home'
+import Tasks from '../../pages/application/task/Tasks'
+
 import PrivateRoutes from './PrivateRoutes'
+import AppContainer from '../../pages/application/AppContainer'
 
 const AppRouter = () => {
-  const { isSignedIn } = useUserSelector((state) => state.user)
+  const { isSignedIn } = useUserSelector()
 
   return (
     <Routes>
@@ -39,11 +44,15 @@ const AppRouter = () => {
         path={AppRoutes.home.base}
         element={
           <PrivateRoutes authorized={isSignedIn}>
-            <Home />
+            <AppContainer />
           </PrivateRoutes>
         }>
         <Route
-          path={AppRoutes.home.formTask}
+          index
+          element={<Home />}
+        />
+        <Route
+          path={AppRoutes.home.Tasks}
           element={<Tasks />}
         />
       </Route>
