@@ -6,7 +6,7 @@ const TaskSchema = z.object({
   steps: z
     .array(
       z.object({
-        label: z.string({ message: 'label is required' }),
+        label: z.string().nonempty({ message: 'label is required' }),
         status: z.enum(['completed', 'pending']).default('pending')
       })
     )
