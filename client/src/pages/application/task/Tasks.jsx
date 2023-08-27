@@ -1,12 +1,13 @@
 import { useEffect } from 'react'
 import { useTaskSelector, useUserSelector } from '../../../hooks/store'
-import { useTaskActions } from '../../../hooks/useTaskActions'
-
-import useModal from '../../../hooks/useModal'
+import useTaskActions from '../../../hooks/useTaskActions'
 
 import TaskCard from './TaskCard'
 import TaskDetail from './TaskDetail'
 import CreateTask from './create/CreateTask'
+
+import useModal from '../../../hooks/useModal'
+
 import CrossMark from './icons/CrossMark'
 
 const Tasks = () => {
@@ -16,7 +17,6 @@ const Tasks = () => {
 
   const { tasks } = useTaskSelector((state) => state.task)
   const { clearAllTasks, getAllTasks, clearTaskDetail } = useTaskActions()
-
   const { ModalContainer, toggleModal } = useModal()
 
   useEffect(() => {
@@ -29,8 +29,8 @@ const Tasks = () => {
   return (
     <>
       <h3 className='mt-4 text-3xl text-center'>Tareas</h3>
-
       <CreateTask />
+
       <ModalContainer>
         <div className='flex justify-between items-center'>
           <h4 className='text-3xl'>Detalle de la tarea</h4>
@@ -43,14 +43,14 @@ const Tasks = () => {
             <CrossMark />
           </button>
         </div>
-        <TaskDetail />
+        <TaskDetail isClose={toggleModal} />
       </ModalContainer>
 
       <section className='flex-grow flex flex-col'>
         {tasks?.map((task) => (
           <TaskCard
             key={task.id_task}
-            onClick={toggleModal}
+            isVisible={toggleModal}
             {...task}
           />
         ))}

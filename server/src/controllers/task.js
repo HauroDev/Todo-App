@@ -13,7 +13,8 @@ class TaskController {
       where: idUser ? { id_user: idUser } : undefined,
       attributes: {
         exclude: ['description', 'steps']
-      }
+      },
+      order: [['createdAt','ASC']]
     }
 
     const tasks = await Task.findAll(Options)

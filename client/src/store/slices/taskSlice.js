@@ -44,7 +44,13 @@ export const taskSlice = createSlice({
       return { ...state, tasks: [...state.tasks, action.payload] }
     },
     update: (state, action) => {
-      return { ...state, tasks: [...state.tasks, action.payload] }
+      const indexTaskUpdate = state.tasks.findIndex(
+        (t) => t.id_task === action.payload.id_task
+      )
+      const tasks = [...state.tasks]
+      tasks[indexTaskUpdate] = action.payload
+
+      return { ...state, tasks }
     }
   }
 })

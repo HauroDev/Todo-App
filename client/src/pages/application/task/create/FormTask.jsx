@@ -1,13 +1,15 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import PlusMark from '../icons/PlusMark'
-import { taskSchema } from './schema'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
-import CrossMark from '../icons/CrossMark'
-import { useUserSelector } from '../../../../hooks/store'
-import { useTaskActions } from '../../../../hooks/useTaskActions'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 
-const FormTask = () => {
+import { taskSchema } from '../schemas'
+import { useUserSelector } from '../../../../hooks/store'
+import useTaskActions from '../../../../hooks/useTaskActions'
+
+import PlusMark from '../icons/PlusMark'
+import CrossMark from '../icons/CrossMark'
+
+const FormTask = ({ onClose }) => {
   const {
     dataUser: { id_user: idUser }
   } = useUserSelector()
@@ -46,9 +48,9 @@ const FormTask = () => {
     createTask(data)
       .then(() => {
         reset()
+        onClose()
       })
       .catch((error) => {
-        // algun mensaje de error
         console.log(error)
       })
 

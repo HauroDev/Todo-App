@@ -16,3 +16,4 @@ export const taskSchema = z.object({
     .uuid({ message: 'id_user needs to be in UUID format' })
     .nonempty({ message: 'id_user is required' })
 })
+export const statusSchema = z.enum(['completed', 'in progress', 'pending'])

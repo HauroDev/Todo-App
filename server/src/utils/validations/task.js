@@ -7,7 +7,9 @@ const TaskSchema = z.object({
     .array(
       z.object({
         label: z.string().nonempty({ message: 'label is required' }),
-        status: z.enum(['completed', 'pending']).default('pending')
+        status: z
+          .enum(['completed', 'in progress', 'pending'])
+          .default('pending')
       })
     )
     .optional(),

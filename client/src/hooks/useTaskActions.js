@@ -6,7 +6,7 @@ import { useTaskDispatch } from './store'
 import * as Task from '../store/slices/taskSlice'
 import { useCallback } from 'react'
 
-export const useTaskActions = () => {
+const useTaskActions = () => {
   const dispatch = useTaskDispatch()
 
   const clearTaskDetail = useCallback(async () => {
@@ -63,9 +63,12 @@ export const useTaskActions = () => {
     }
   }, [])
 
-  const updateTask = useCallback(async (id) => {
+  const updateTask = useCallback(async (data) => {
     try {
-      const updatedTask = await axios.put(`${ApiRoutes.task.update}/${id}`)
+      const updatedTask = await axios.put(
+        `${ApiRoutes.task.update}/${data.id_task}`,
+        data
+      )
 
       dispatch(Task.update(updatedTask))
     } catch (error) {
@@ -84,3 +87,5 @@ export const useTaskActions = () => {
     updateTask
   }
 }
+
+export default useTaskActions
