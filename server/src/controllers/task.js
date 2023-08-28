@@ -1,3 +1,4 @@
+const { Op } = require('sequelize')
 const { List, Task } = require('../db')
 const { ResponseError } = require('../utils/errors')
 const {
@@ -7,15 +8,21 @@ const {
 
 class TaskController {
   static async getAll(req, res) {
-    const { idUser } = req.query
+    const { idUser, deleted, paranoid } = req.query
 
     const Options = {
-      where: idUser ? { id_user: idUser } : undefined,
+      where: {},
       attributes: {
         exclude: ['description', 'steps']
       },
-      order: [['createdAt','ASC']]
+      order: [['createdAt', 'ASC']]
     }
+    if (idUser) Options.where.id_user = idUser
+    if (deleted) {
+      Options.where.deletedAt = { [Op.not]: null }
+      Options.paranoid = !deleted
+    }
+    if (paranoid) Options.paranoid = false
 
     const tasks = await Task.findAll(Options)
 
@@ -94,6 +101,24 @@ class TaskController {
       await taskFound.destroy()
 
       res.status(200).json({ message: 'task soft deleted successfully' })
+    } catch (error) {
+      res.status(error.status || 500).json({ message: error.message })
+    }
+  }
+  
+  static async hardDelete(req, res) {
+    const { idTask } = req.params
+
+    try {
+      const taskFound = await Task.findByPk(idTask, { paranoid: false })
+
+      if (!taskFound) {
+        throw new ResponseError({ message: 'Task not found', status: 404 })
+      }
+
+      await taskFound.destroy({ force: true })
+
+      res.status(200).json({ message: 'task hard deleted successfully' })
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }

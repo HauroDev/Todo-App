@@ -2,13 +2,13 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 
-const { db } = require('./db')
-const { PORT } = require('./config')
+const { db } = require('./src/db')
+const { PORT } = require('./src/config')
 
-const routerApp = require('./router')
+const routerApp = require('./src/router')
 
 class Server {
-  static middlewares() {
+  static middleware() {
     this.app.disable('x-powered-by')
 
     this.app.use(morgan('dev'))
@@ -16,7 +16,7 @@ class Server {
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
 
-    this.app.use(cors({ origin: 'http://localhost:5173', credentials: true }))
+    this.app.use(cors({ origin: 'http://localhost:5173' }))
     this.app.use('/api/v1', routerApp)
   }
 
@@ -28,7 +28,7 @@ class Server {
 
   static async connectWithdb() {
     try {
-      await db.sync({ force: false})
+      await db.sync({ force: false })
       console.log('database connection successfully\n')
     } catch (error) {
       console.log(error)
@@ -40,7 +40,7 @@ class Server {
 
     this.connectWithdb()
       .then(() => {
-        this.middlewares()
+        this.middleware()
         this.methods()
         this.app.listen(PORT, () => {
           console.log(`Server is running on port ${PORT}`)
