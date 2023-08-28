@@ -7,28 +7,22 @@ const TaskCard = (props) => {
   const { getTaskDetail, deleteTask, updateTask, getAllTasks } =
     useTaskActions()
 
-  const { isOpen, StatusButtons, toggleOpen } = useChangeStatus((newStatus) =>
-    updateTask({ id_task: props.id_task, status: newStatus })
-      .then(() => getAllTasks(props.id_user))
-      .then(() => toggleOpen())
+  const { isOpen, StatusButtons, toggleOpen, StatusButton } = useChangeStatus(
+    (newStatus) =>
+      updateTask({ id_task: props.id_task, status: newStatus })
+        .then(() => getAllTasks(props.id_user))
+        .then(() => toggleOpen())
   )
 
   return (
     <article className='flex flex-row gap-1 items-center rounded-lg bg-gray-900 m-1 p-2'>
-      <StatusButtons />
+      {isOpen && <StatusButtons />}
       {!isOpen && (
         <>
-          <button
+          <StatusButton
             onClick={toggleOpen}
-            className={`${
-              props.status === 'pending'
-                ? 'text-orange-600 border-orange-600'
-                : props.status === 'in progress'
-                ? 'text-yellow-600 border-yellow-600'
-                : 'text-green-600 border-green-600'
-            } border-2 p-1 rounded-lg`}>
-            {props.status}
-          </button>
+            status={props.status}
+          />
 
           <p
             onClick={() => {

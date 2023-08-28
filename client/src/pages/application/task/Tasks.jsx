@@ -43,7 +43,7 @@ const Tasks = () => {
             <CrossMark />
           </button>
         </div>
-        <TaskDetail isClose={toggleModal} />
+        <TaskDetail />
       </ModalContainer>
 
       <section className='flex-grow flex flex-col'>

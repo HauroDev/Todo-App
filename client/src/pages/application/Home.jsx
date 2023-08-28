@@ -12,7 +12,7 @@ const Home = () => {
       </h2>
       <div className='flex-grow flex flex-col items-center mt-2 w-[80%] lg:w-[60%]'>
         <h3>Holanda</h3>
-        <p>informacion de las tareas resumidas</p>
+        <p>información de las tareas resumidas</p>
       </div>
     </>
   )

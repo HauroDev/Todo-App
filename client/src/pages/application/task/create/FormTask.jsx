@@ -1,6 +1,5 @@
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
 
 import { taskSchema } from '../schemas'
 import { useUserSelector } from '../../../../hooks/store'
@@ -39,10 +38,6 @@ const FormTask = ({ onClose }) => {
     name: 'steps'
   })
 
-  useEffect(() => {
-    return () => reset()
-  }, [])
-
   const handleStepAdd = () => append({ label: '' })
   const onSubmit = (data) =>
     createTask(data)
@@ -63,15 +58,15 @@ const FormTask = ({ onClose }) => {
         <label htmlFor='title'>Título</label>
         <input
           className='w-full p-1 text-black'
-          placeholder='actividad, obligacion o meta...'
+          placeholder='actividad, obligación o meta...'
           {...register('title')}
         />
         <p className='text-red-600 mt-2'>{errors.title?.message}</p>
-        <label htmlFor='description'>Descripcion (opcional)</label>
+        <label htmlFor='description'>Descripción (opcional)</label>
         <textarea
           autoComplete='off'
           className='w-full p-1 text-black'
-          placeholder='descripcion de la tarea...'
+          placeholder='descripción de la tarea...'
           {...register('description')}
         />
       </fieldset>
