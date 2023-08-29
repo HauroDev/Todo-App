@@ -16,6 +16,7 @@ import Tasks from '../../pages/application/task/Tasks'
 
 import PrivateRoutes from './PrivateRoutes'
 import AppContainer from '../../pages/application/AppContainer'
+import UserProfile from '../../pages/application/user/UserProfile'
 
 const AppRouter = () => {
   const { isSignedIn } = useUserSelector()
@@ -54,6 +55,10 @@ const AppRouter = () => {
         <Route
           path={AppRoutes.home.Tasks}
           element={<Tasks />}
+        />
+        <Route
+          path={AppRoutes.home.profile.base}
+          element={<UserProfile />}
         />
       </Route>
 

@@ -19,6 +19,17 @@ class AppRoutes {
       },
       get Tasks() {
         return `${self._home}/tasks`
+      },
+      get profile() {
+        const profileUrl = `${self._home}${self._profile}`
+        return {
+          get base() {
+            return profileUrl
+          },
+          get edit() {
+            return `${profileUrl}/edit`
+          }
+        }
       }
     }
   }
@@ -43,18 +54,6 @@ class AppRoutes {
       },
       get signIn() {
         return `${self._auth}/sign-in`
-      }
-    }
-  }
-
-  get profile() {
-    const self = this
-    return {
-      get base() {
-        return self._profile
-      },
-      get edit() {
-        return `${self._profile}/edit`
       }
     }
   }

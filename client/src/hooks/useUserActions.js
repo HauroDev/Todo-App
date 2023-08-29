@@ -1,7 +1,8 @@
 import axios from 'axios'
-import { signIn, signOut, signUp } from '../store/slices/userSlice'
+import * as User from '../store/slices/userSlice'
 import { useUserDispatch } from './store'
 import { ApiRoutes } from '../utils/routes/apiRoutes'
+import { toast } from 'react-toastify'
 
 export const useUserActions = () => {
   const dispatch = useUserDispatch()
@@ -12,9 +13,12 @@ export const useUserActions = () => {
       const { data } = await axios.get(urlLogin)
       const { token, dataUser } = data
 
-      dispatch(signIn({ token, dataUser }))
+      dispatch(User.signIn({ token, dataUser }))
+
+      toast.success('Sesión Iniciada Correctamente')
     } catch (error) {
-      throw new Error('connection error: ' + error.message)
+      toast.error('Problema de Conexión')
+      throw error
     }
   }
 
@@ -22,21 +26,39 @@ export const useUserActions = () => {
     try {
       await axios.get(ApiRoutes.signOut)
 
-      dispatch(signOut())
+      dispatch(User.signOut())
+
+      toast.success('Sesión Finalizada Correctamente')
     } catch (error) {
-      throw new Error('connection error: ' + error.message)
+      toast.error('Problema de Conexión')
+      throw error
     }
   }
 
-  const registerUser = async (information) => {
+  const registerUser = async (info) => {
     try {
-      const { data } = await axios.post(ApiRoutes.signUp, information)
-
-      dispatch(signUp(data))
+      const { data } = await axios.post(ApiRoutes.signUp, info)
+      dispatch(User.signUp(data))
+      toast.success('Registro e Inicio de Sesión completado')
     } catch (error) {
-      throw new Error('connection error: ' + error.message)
+      toast.error('Problema de Conexión')
+      throw error
     }
   }
 
-  return { loginUser, logoutUser, registerUser }
+  const updateInfo = async (info) => {
+    const updateUrl = `${ApiRoutes.user.update}/${info.id_user}`
+
+    try {
+      const { data } = await axios.put(updateUrl, info)
+
+      dispatch(User.update(data))
+      toast.success('Datos de Usuario Actualizados Correctamente')
+    } catch (error) {
+      toast.error('Problema de Conexión')
+      throw error
+    }
+  }
+
+  return { loginUser, logoutUser, registerUser, updateInfo }
 }

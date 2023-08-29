@@ -28,10 +28,13 @@ export const userSlice = createSlice({
     },
     signUp: (state, action) => {
       return { ...state, ...action.payload, isSignedIn: true }
+    },
+    update: (state, action) => {
+      return { ...state, dataUser: action.payload }
     }
   }
 })
 
-export const { signUp, signIn, signOut } = userSlice.actions
+export const { signUp, signIn, signOut, update } = userSlice.actions
 
 export default userSlice.reducer

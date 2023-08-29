@@ -5,6 +5,7 @@ import { useTaskDispatch } from './store'
 
 import * as Task from '../store/slices/taskSlice'
 import { useCallback } from 'react'
+import { toast } from 'react-toastify'
 
 const useTaskActions = () => {
   const dispatch = useTaskDispatch()
@@ -22,7 +23,8 @@ const useTaskActions = () => {
       const { data } = await axios.get(`${ApiRoutes.task.all}?idUser=${id}`)
       dispatch(Task.getAll(data))
     } catch (error) {
-      throw new Error(error.message)
+      toast.error('Problema de Conexión')
+      throw error
     }
   }, [])
 
@@ -31,7 +33,8 @@ const useTaskActions = () => {
       const { data } = await axios.get(`${ApiRoutes.task.base}/${id}`)
       dispatch(Task.getDetail(data))
     } catch (error) {
-      throw new Error(error.message)
+      toast.error('Problema de Conexión')
+      throw error
     }
   }, [])
 
@@ -39,8 +42,10 @@ const useTaskActions = () => {
     try {
       const { data } = await axios.post(ApiRoutes.task.create, info)
       dispatch(Task.create(data))
+      toast.success('Tarea Creada Correctamente')
     } catch (error) {
-      throw new Error(error.message)
+      toast.error('Problema de Conexión')
+      throw error
     }
   }, [])
 
@@ -48,8 +53,10 @@ const useTaskActions = () => {
     try {
       await axios.put(`${ApiRoutes.task.delete}/${id}`)
       dispatch(Task.remove(id))
+      toast.success('Tarea Borrada Correctamente')
     } catch (error) {
-      throw new Error(error.message)
+      toast.error('Problema de Conexión')
+      throw error
     }
   }, [])
 
@@ -58,8 +65,10 @@ const useTaskActions = () => {
       await axios.put(`${ApiRoutes.task.restore}/${id}`)
       const { data } = await axios.get(`${ApiRoutes.task.base}/${id}`)
       dispatch(Task.restore(data))
+      toast.success('Tarea Restaurada Correctamente')
     } catch (error) {
-      throw new Error(error.message)
+      toast.error('Problema de Conexión')
+      throw error
     }
   }, [])
 
@@ -71,8 +80,10 @@ const useTaskActions = () => {
       )
 
       dispatch(Task.update(updatedTask))
+      toast.success('Tarea Actualizada Correctamente')
     } catch (error) {
-      throw new Error(error.message)
+      toast.error('Problema de Conexión')
+      throw error
     }
   }, [])
 
