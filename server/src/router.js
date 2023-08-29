@@ -9,9 +9,10 @@ const { validateToken } = require('./middleware/auth')
 const routes = Router()
 
 routes.use('/', authRouter)
-routes.use(validateToken)
-routes.use('/user', usersRouter)
 
+routes.use(validateToken)
+
+routes.use('/user', usersRouter)
 routes.use('/task', tasksRouter)
 
 module.exports = routes

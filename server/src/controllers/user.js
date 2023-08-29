@@ -7,7 +7,7 @@ const {
 
 const { ResponseError } = require('../utils/errors')
 const { JWT_SECRET } = require('../config')
-const { encript, compare } = require('../utils/decode')
+const { encrypt, compare } = require('../utils/decode')
 const { Op } = require('sequelize')
 
 class UserController {
@@ -39,7 +39,7 @@ class UserController {
         })
       }
 
-      const passwordHash = await encript(userInfo.data.password)
+      const passwordHash = await encrypt(userInfo.data.password)
 
       const newUser = await User.create({
         ...req.body,
@@ -48,6 +48,9 @@ class UserController {
 
       const newUserJSON = newUser.toJSON()
       delete newUserJSON.password
+      delete newUserJSON.createdAt
+      delete newUserJSON.updatedAt
+      delete newUserJSON.deletedAt
 
       const token = jwt.sign(newUserJSON, JWT_SECRET)
 
@@ -59,6 +62,8 @@ class UserController {
 
   static async login(req, res) {
     const userInfo = validationPartialUser(req.query)
+
+    console.log(userInfo)
 
     try {
       if (!userInfo.success) {
@@ -72,6 +77,8 @@ class UserController {
       const userDb = await User.findOne({
         where: { username: userInfo.data.username }
       })
+
+      console.log(userDb)
 
       const passwordCorrect =
         userDb === null
@@ -87,6 +94,9 @@ class UserController {
 
       const userJSON = userDb.toJSON()
       delete userJSON.password
+      delete userJSON.createdAt
+      delete userJSON.updatedAt
+      delete userJSON.deletedAt
 
       const token = jwt.sign(userJSON, JWT_SECRET)
 
@@ -118,8 +128,8 @@ class UserController {
         })
       }
 
-      if (userInfo.data.password) {
-        userInfo.data.password = await encript(userInfo.data.password)
+      if (userInfo.data.password?.length) {
+        userInfo.data.password = await encrypt(userInfo.data.password)
       }
 
       const userFound = await User.findByPk(idUser)

@@ -20,7 +20,7 @@ const validationUser = (user) => {
 }
 
 const validationPartialUser = (user) => {
-  return UserSchema.partial({ email: true }).safeParse(user)
+  return UserSchema.partial({ email: true, password: true }).safeParse(user)
 }
 
 module.exports = {

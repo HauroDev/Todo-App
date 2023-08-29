@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt')
 const { SALT_OR_ROUNDS } = require('../config')
 
-const encript = async (data) => {
+const encrypt = async (data) => {
   return await bcrypt.hash(data, SALT_OR_ROUNDS)
 }
 
@@ -10,6 +10,6 @@ const compare = async (data, comparison) => {
 }
 
 module.exports = {
-  encript,
+  encrypt,
   compare
 }
