@@ -7,7 +7,7 @@ const useModal = () => {
 
   const ModalContainer = ({ children }) =>
     isOpen && (
-      <div className='flex bg-[rgba(0,0,0,0.3)] flex-col justify-center items-center w-full fixed top-0 left-0 z-50 h-full'>
+      <div className='fixed top-0 left-0 z-50 h-full flex bg-[rgba(0,0,0,0.3)] flex-col justify-center items-center w-full'>
         <article className='relative bg-gray-800 p-4 m-4 w-[80%] lg:w-[60%] rounded-lg'>
           {children}
         </article>

@@ -91,17 +91,19 @@ const TaskDetail = () => {
         )}
         {!isEdit.description && <p>{taskDetail.description}</p>}
       </div>
-      <div>
-        {taskDetail.steps?.map((_, index) => (
-          <StepCard
-            key={index}
-            index={index}
-            steps={dataTask.steps}
-            idTask={taskDetail.id_task}
-            idUser={taskDetail.id_user}
-          />
-        ))}
-      </div>
+      {!!taskDetail.steps?.length && (
+        <div className='flex flex-col gap-1 items-center rounded-lg bg-gray-700 m-1 p-2'>
+          {taskDetail.steps?.map((_, index) => (
+            <StepCard
+              key={index}
+              index={index}
+              steps={dataTask.steps}
+              idTask={taskDetail.id_task}
+              idUser={taskDetail.id_user}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
