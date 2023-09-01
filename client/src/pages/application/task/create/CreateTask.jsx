@@ -18,15 +18,13 @@ const CreateTask = () => {
             <CrossMark />
           </button>
         </div>
-        <FormTask onClose={toggleModal} />
+        <FormTask callback={toggleModal} />
       </ModalContainer>
 
       {!isOpen && (
         <button
           className='mt-2 block w-full bg-gray-800 rounded p-2 border-b-gray-950 hover:border-b-gray-200 active:border-b-gray-50 border-b-2 active:text-gray-500 active:border-gray-500 hover:bg-gray-500 duration-200 disabled:bg-gray-400 disabled:hover:border-b-gray-950 disabled:active:text-red-400'
-          onClick={(event) => {
-            toggleModal()
-          }}>
+          onClick={toggleModal}>
           Crear Tarea
         </button>
       )}

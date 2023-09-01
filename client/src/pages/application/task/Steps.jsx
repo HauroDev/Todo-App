@@ -3,17 +3,15 @@ import useTaskActions from '../../../hooks/useTaskActions'
 import useChangeStatus from './hooks/useChangeStatus'
 import CrossMark from './icons/CrossMark'
 
-const StepCard = ({ steps, index, idTask, idUser }) => {
+const Steps = ({ steps, index, idTask, idUser }) => {
   const [isEdit, setIsEdit] = useState(false)
   const [dataStep, setDataStep] = useState({ ...steps[index] })
   const { updateTask, getTaskDetail } = useTaskActions()
 
-  const { StatusButton, StatusButtons, isOpen, toggleOpen } = useChangeStatus(
-    (status) => {
-      setDataStep({ ...dataStep, status })
-      updatingSteps({ ...dataStep, status }, index)
-    }
-  )
+  const { StatusButton, StatusButtons, isOpen } = useChangeStatus((status) => {
+    setDataStep({ ...dataStep, status })
+    updatingSteps({ ...dataStep, status }, index)
+  })
 
   const updatingSteps = (step, index) => {
     const updatedSteps = [...steps]
@@ -37,10 +35,7 @@ const StepCard = ({ steps, index, idTask, idUser }) => {
       {isOpen && <StatusButtons />}
       {!isOpen && (
         <>
-          <StatusButton
-            status={dataStep.status}
-            onClick={toggleOpen}
-          />
+          <StatusButton status={dataStep.status} />
 
           <div
             className={`m-1 w-full bg-gray-600 rounded-lg ${
@@ -96,4 +91,4 @@ const StepCard = ({ steps, index, idTask, idUser }) => {
   )
 }
 
-export default StepCard
+export default Steps

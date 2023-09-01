@@ -1,21 +1,24 @@
 import { useState } from 'react'
 import { statusSchema } from '../schemas'
 
-const useChangeStatus = (callback) => {
+const useChangeStatus = (returnCallback) => {
   const [isOpen, setIsOpen] = useState(false)
+
+  const toggleOpen = () => setIsOpen(!isOpen)
 
   const changeStatus = (event) => {
     const statusValid = statusSchema.safeParse(event.target.value)
 
-    callback(statusValid.data)
+    if (statusValid.success) {
+      returnCallback(statusValid.data)
+      toggleOpen()
+    }
   }
 
-  const toggleOpen = () => setIsOpen(!isOpen)
-
-  const StatusButton = ({ status, onClick }) => {
+  const StatusButton = ({ status }) => {
     return (
       <button
-        onClick={onClick}
+        onClick={toggleOpen}
         className={`${
           status === 'pending'
             ? 'text-orange-600 border-orange-600'

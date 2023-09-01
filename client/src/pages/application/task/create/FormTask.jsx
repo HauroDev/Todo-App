@@ -8,7 +8,7 @@ import useTaskActions from '../../../../hooks/useTaskActions'
 import PlusMark from '../icons/PlusMark'
 import CrossMark from '../icons/CrossMark'
 
-const FormTask = ({ onClose }) => {
+const FormTask = ({ callback }) => {
   const {
     dataUser: { id_user: idUser }
   } = useUserSelector()
@@ -43,7 +43,7 @@ const FormTask = ({ onClose }) => {
     createTask(data)
       .then(() => {
         reset()
-        onClose()
+        callback()
       })
       .catch((error) => {
         console.log(error)
