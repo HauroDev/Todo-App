@@ -1,67 +1,85 @@
-import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+
 import { useUserSelector } from '../../../hooks/store'
 import { useUserActions } from '../../../hooks/useUserActions'
-import ProfileDetailSVG from './ProfileDetailSVG'
-import FieldsUserData from './FieldsUserData.jsx'
+import { UserDataSchema } from './schema'
 
+import ProfileDetailSVG from './ProfileDetailSVG'
+import SubmitButton from '../../../components/SubmitButton'
+
+// decorar y optimizar carga de componente
 const UserProfile = () => {
   const { dataUser } = useUserSelector()
   const { updateInfo } = useUserActions()
 
-  const [newData, setNewData] = useState({ ...dataUser })
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      id_user: dataUser.id_user,
+      firstname: dataUser.firstname,
+      lastname: dataUser.lastname,
+      username: dataUser.username,
+      email: dataUser.email,
+      password: '',
+      passwordConfirmation: ''
+    },
+    resolver: zodResolver(UserDataSchema)
+  })
 
-  // faltan verificaciones básicas como que no pueden ser campos vacíos
-
-  const updatingDataUser = ({ target: { name, value } }) =>
-    updateInfo(newData)
-      .then(() => {
-        setNewData({ ...newData, [name]: value })
-      })
-      .catch((error) => {
-        console.log(error)
-        setNewData({ ...dataUser })
-      })
+  const onSubmit = (data) => {
+    updateInfo(data)
+  }
 
   return (
     <div className='flex-grow w-full'>
       <h2 className='text-3xl text-center'>Datos de Cuenta</h2>
 
       <div className='flex flex-col-reverse justify-center sm:flex-row gap-2'>
-        <div className='mx-4 mt-5 mb-4'>
-          <FieldsUserData
-            label='Nombre de Usuario'
-            field='username'
-            state={newData.username}
-            setState={setNewData}
-            updateFunction={updatingDataUser}
-          />
-          <FieldsUserData
-            label='Nombre'
-            field='firstname'
-            state={newData.firstname}
-            setState={setNewData}
-            updateFunction={updatingDataUser}
-          />
-          <FieldsUserData
-            label='Apellido'
-            field='lastname'
-            state={newData.lastname}
-            setState={setNewData}
-            updateFunction={updatingDataUser}
-          />
-          <FieldsUserData
-            label='Correo Electrónico'
-            field='email'
-            state={newData.email}
-            setState={setNewData}
-            updateFunction={updatingDataUser}
-          />
-        </div>
+        <form
+          className='mx-4 mt-5 mb-4'
+          onSubmit={handleSubmit(onSubmit)}>
+          <fieldset>
+            <legend>Datos de Usuario</legend>
+            <input
+              type='text'
+              className='w-full p-1 mt-4 bg-gray-600 rounded-md'
+              {...register('firstname')}
+            />
+            <input
+              type='text'
+              className='w-full p-1 mt-4 bg-gray-600 rounded-md'
+              {...register('lastname')}
+            />
+          </fieldset>
+          <fieldset>
+            <legend>Credenciales</legend>
+            <input
+              type='text'
+              className='w-full p-1 mt-4 bg-gray-600 rounded-md'
+              {...register('username')}
+            />
+            <input
+              type='text'
+              className='w-full p-1 mt-4 bg-gray-600 rounded-md'
+              {...register('email')}
+            />
+          </fieldset>
+          <fieldset>
+            <legend>Cambiar Contraseña</legend>
+            <input
+              type='text'
+              className='w-full p-1 mt-4 bg-gray-600 rounded-md'
+              {...register('password')}
+            />
+            <input
+              type='text'
+              className='w-full p-1 mt-4 bg-gray-600 rounded-md'
+              {...register('passwordConfirmation')}
+            />
+          </fieldset>
+          <SubmitButton label='Actualizar' />
+        </form>
         <div className='flex flex-col justify-center items-center sm:w-[80ch] p-4'>
-          <p>
-            Para Editar la información haga doble click en los campos que quiere
-            editar, Oprima Enter para Confirmar
-          </p>
           <ProfileDetailSVG className='w-72' />
         </div>
       </div>

@@ -2,13 +2,23 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { taskSchema } from '../schemas'
+
 import { useUserSelector } from '../../../../hooks/store'
 import useTaskActions from '../../../../hooks/useTaskActions'
 
-import PlusMark from '../icons/PlusMark'
-import CrossMark from '../icons/CrossMark'
+import CrossButton from '../../../../components/CrossButton'
+import PlusButton from '../../../../components/PlusButton'
+import SubmitButton from '../../../../components/SubmitButton'
 
-const FormTask = ({ callback }) => {
+const FormTask = ({
+  callback,
+  defaultValues = {
+    status: 'pending',
+    title: '',
+    description: '',
+    steps: []
+  }
+}) => {
   const {
     dataUser: { id_user: idUser }
   } = useUserSelector()
@@ -22,13 +32,7 @@ const FormTask = ({ callback }) => {
     control,
     reset
   } = useForm({
-    defaultValues: {
-      status: 'pending',
-      title: '',
-      description: '',
-      steps: [],
-      id_user: idUser
-    },
+    defaultValues: { ...defaultValues, id_user: idUser },
     mode: 'onChange',
     resolver: zodResolver(taskSchema)
   })
@@ -55,18 +59,18 @@ const FormTask = ({ callback }) => {
       onSubmit={handleSubmit(onSubmit)}>
       <fieldset>
         <legend>Datos de la tarea</legend>
-        <label htmlFor='title'>Título</label>
+
         <input
-          className='w-full p-1 text-black'
-          placeholder='actividad, obligación o meta...'
+          type='text'
+          className='w-full p-1 mt-4 bg-gray-600 rounded-md'
+          placeholder='Titulo'
           {...register('title')}
         />
         <p className='text-red-600 mt-2'>{errors.title?.message}</p>
-        <label htmlFor='description'>Descripción (opcional)</label>
         <textarea
           autoComplete='off'
-          className='w-full p-1 text-black'
-          placeholder='descripción de la tarea...'
+          className='w-full p-1 mt-4 bg-gray-600 rounded-md'
+          placeholder='Descripción'
           {...register('description')}
         />
       </fieldset>
@@ -77,53 +81,43 @@ const FormTask = ({ callback }) => {
         {fields.map((step, index) => (
           <div
             key={step.id}
-            className='flex gap-2'>
+            className='flex gap-2 justify-center items-center'>
             <Controller
               name={`steps.${index}.label`}
               control={control}
-              render={({ field: { onChange, value, name, ref, onBlur } }) => (
+              rules={{
+                onBlur: (event) => {
+                  if (!event.target.value) {
+                    remove(index)
+                  }
+                }
+              }}
+              render={({ field: { value, name, ref, onBlur, onChange } }) => (
                 <input
                   autoComplete='off'
-                  className='p-1 text-black'
-                  onBlur={(event) => {
-                    if (!event.target.value) {
-                      remove(index)
-                    }
-                    onBlur(event)
-                  }}
+                  className='p-2 m-1 w-full bg-gray-600 rounded-md'
+                  onBlur={onBlur}
                   onKeyDown={(event) => {
-                    if (event.key.toLocaleLowerCase() === 'enter') {
+                    if (event.key === 'Enter') {
                       handleStepAdd()
                     }
                   }}
-                  {...{ name, value, onChange, ref }}
+                  {...{ name, value, ref, onChange }}
                 />
               )}
             />
 
-            <button
-              type='button'
-              className='block w-fit bg-gray-700 rounded p-1 border-b-gray-950 hover:border-b-gray-200 active:border-b-gray-50 border-b-2 active:text-gray-500 active:border-gray-500 hover:bg-gray-500 duration-200'
-              onClick={() => remove(index)}>
-              <CrossMark />
-            </button>
+            <CrossButton onClick={() => remove(index)} />
           </div>
         ))}
 
-        <button
-          type='button'
-          className='block w-fit bg-gray-700 rounded p-2 border-b-gray-950 hover:border-b-gray-200 active:border-b-gray-50 border-b-2 active:text-gray-500 active:border-gray-500 hover:bg-gray-500 duration-200'
-          onClick={handleStepAdd}>
-          <PlusMark />
-        </button>
+        <PlusButton onClick={handleStepAdd} />
       </fieldset>
 
-      <button
-        type='submit'
+      <SubmitButton
         disabled={submitCount === 0 ? false : !isDirty || !isValid}
-        className='mt-2 block w-full bg-gray-800 rounded p-1 border-b-gray-950 hover:border-b-gray-200 active:border-b-gray-50 border-b-2 active:text-gray-500 active:border-gray-500 hover:bg-gray-500 duration-200 disabled:bg-gray-400 disabled:hover:border-b-gray-950 disabled:text-red-400 disabled:active:duration-0'>
-        Crear Tarea
-      </button>
+        label='Crear Tarea'
+      />
     </form>
   )
 }

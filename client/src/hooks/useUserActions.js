@@ -11,9 +11,9 @@ export const useUserActions = () => {
     const urlLogin = ApiRoutes.signIn + '?' + new URLSearchParams(credentials)
     try {
       const { data } = await axios.get(urlLogin)
-      const { token, dataUser } = data
+      const { dataUser, token } = data
 
-      dispatch(User.signIn({ token, dataUser }))
+      dispatch(User.signIn({ dataUser, token }))
 
       toast.success('Sesión Iniciada Correctamente')
     } catch (error) {

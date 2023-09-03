@@ -1,7 +1,10 @@
 import { z } from 'zod'
 
-export const signUpSchema = z
+export const UserDataSchema = z
   .object({
+    id_user: z
+      .string()
+      .uuid({ message: 'id_user deberia ser de formato uuid' }),
     username: z
       .string()
       .nonempty({ message: 'falta su nombre de usuario' })

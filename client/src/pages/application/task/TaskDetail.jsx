@@ -1,116 +1,144 @@
-import Steps from './Steps'
-import { useState } from 'react'
+import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { useTaskSelector } from '../../../hooks/store'
-import useChangeStatus from './hooks/useChangeStatus'
 import useTaskActions from '../../../hooks/useTaskActions'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { taskDetailSchema } from './schemas'
+import useChangeStatus from './hooks/useChangeStatus'
+import CrossButton from '../../../components/CrossButton'
+import PlusButton from '../../../components/PlusButton'
+
+const StatusChanger = ({ initialValue, onChange }) => {
+  const { isOpen, StatusButton, StatusButtons } = useChangeStatus(
+    initialValue,
+    onChange
+  )
+
+  return (
+    <>
+      {isOpen && <StatusButtons />}
+      {!isOpen && <StatusButton />}
+    </>
+  )
+}
 
 const TaskDetail = () => {
   const { taskDetail } = useTaskSelector()
-  const { getAllTasks, getTaskDetail, updateTask } = useTaskActions()
+  const { updateTask, getAllTasks, getTaskDetail } = useTaskActions()
 
-  const [isEdit, setIsEdit] = useState({ title: false, description: false })
-  const [newTaskDetail, setNewTaskDetail] = useState({ ...taskDetail })
+  const { register, getValues, control, setValue } = useForm({
+    defaultValues: { ...taskDetail },
+    mode: 'onChange',
+    resolver: zodResolver(taskDetailSchema)
+  })
 
-  const handlerChangeStatus = (newStatus) =>
-    updateTask({ id_task: taskDetail.id_task, status: newStatus })
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'steps'
+  })
+
+  const handleStepAdd = () => append({ label: '', status: 'pending' })
+  const handleStepRemove = (index) => remove(index)
+
+  const handleBlur = ({ target: { name, value } }) => {
+    if (taskDetail[name] !== value) {
+      executeSubmit()
+    }
+  }
+
+  const executeSubmit = () => {
+    const data = getValues()
+
+    updateTask(data)
       .then(() =>
         Promise.all([
           getAllTasks(taskDetail.id_user),
           getTaskDetail(taskDetail.id_task)
         ])
       )
-      .then(() => console.log('updated status: ' + newStatus))
-
-  const { isOpen, StatusButtons, StatusButton } =
-    useChangeStatus(handlerChangeStatus)
-
-  const handlerChangeField = ({ target: { name, value } }) =>
-    setNewTaskDetail({ ...newTaskDetail, [name]: value })
-
-  const handlerFieldBlur =
-    (field) =>
-    ({ target: { name } }) =>
-      taskDetail[name] !== newTaskDetail[name]
-        ? updateTask({ ...newTaskDetail })
-            .then(() =>
-              Promise.all([
-                getAllTasks(taskDetail.id_user),
-                getTaskDetail(taskDetail.id_task)
-              ])
-            )
-            .then(() => setIsEdit({ ...isEdit, [field]: false }))
-        : setIsEdit({ ...isEdit, [field]: false })
-
-  const handlerFieldKeyDown =
-    (field) =>
-    ({ key, target: { name } }) => {
-      if (key === 'Enter')
-        if (taskDetail[name] !== newTaskDetail[name]) {
-          updateTask({ ...newTaskDetail })
-            .then(() =>
-              Promise.all([
-                getAllTasks(taskDetail.id_user),
-                getTaskDetail(taskDetail.id_task)
-              ])
-            )
-            .then(() => setIsEdit({ ...isEdit, [field]: false }))
-        } else {
-          setIsEdit({ ...isEdit, [field]: false })
-        }
-    }
+      .catch((error) => console.log(error))
+  }
 
   return (
     <>
-      <div className='flex flex-col mb-2 mt-5 pb-2'>
-        <div onDoubleClick={() => setIsEdit({ ...isEdit, title: true })}>
-          {isEdit.title && (
-            <input
-              type='text'
-              className={`${
-                isEdit.title ? 'border-2 border-gray-200' : ''
-              } my-3 bg-transparent w-full rounded-lg`}
-              name='title'
-              value={newTaskDetail.title}
-              onChange={handlerChangeField}
-              onBlur={handlerFieldBlur('title')}
-              onKeyDown={handlerFieldKeyDown('title')}
-            />
-          )}
-          {!isEdit.title && <h5>{newTaskDetail.title}</h5>}
-        </div>
+      <input
+        type='text'
+        autoComplete='off'
+        className='w-full p-1 mt-4 bg-gray-600 rounded-md'
+        placeholder='Titulo'
+        {...register('title', {
+          onBlur: handleBlur
+        })}
+      />
 
-        <div className='flex justify-center items-center'>
-          {isOpen && <StatusButtons />}
-          {!isOpen && <StatusButton status={newTaskDetail.status} />}
-        </div>
+      <textarea
+        autoComplete='off'
+        className='w-full p-1 mt-4 bg-gray-600 rounded-md'
+        placeholder='Descripción'
+        {...register('description', {
+          onBlur: handleBlur
+        })}
+      />
 
-        <div onDoubleClick={() => setIsEdit({ ...isEdit, description: true })}>
-          {isEdit.description && (
-            <textarea
-              onFocus={(event) => event.target.setSelectionRange(0)}
-              name='description'
-              className={`${
-                isEdit.description ? 'border-2 border-gray-200' : ''
-              } my-3 bg-transparent w-full rounded-lg`}
-              value={newTaskDetail.description}
-              onChange={handlerChangeField}
-              onBlur={handlerFieldBlur('description')}
-              onKeyDown={handlerFieldKeyDown('description')}
+      <div className='flex flex-col gap-2 w-full'>
+        {fields.map((step, index) => (
+          <div
+            key={step.id}
+            className='flex flex-row gap-1 items-center rounded-lg bg-gray-900 p-2'>
+            <Controller
+              name={`steps.${index}.status`}
+              control={control}
+              render={({ field: { value, name } }) => (
+                <StatusChanger
+                  initialValue={value}
+                  onChange={(newStatus) => {
+                    setValue(name, newStatus)
+                    executeSubmit()
+                  }}
+                />
+              )}
             />
-          )}
-          {!isEdit.description && <p>{newTaskDetail.description}</p>}
-        </div>
-        <div className='flex flex-col gap-1 items-center rounded-lg bg-gray-700 m-1 p-2'>
-          {taskDetail.steps?.map((_, index) => (
-            <Steps
-              key={index}
-              index={index}
-              steps={taskDetail.steps}
-              idTask={taskDetail.id_task}
-              idUser={taskDetail.id_user}
+            <Controller
+              name={`steps.${index}.label`}
+              control={control}
+              rules={{
+                onBlur: ({ target: { name, value } }) => {
+                  console.log(name, value)
+                  const isValueEmpty = !value
+                  const isLabelChanged =
+                    !taskDetail.steps[index] ||
+                    taskDetail.steps?.[index]?.label !== value
+
+                  if (isValueEmpty) handleStepRemove(index)
+                  else if (isLabelChanged) executeSubmit()
+                }
+              }}
+              render={({ field: { onChange, value, name, ref, onBlur } }) => (
+                <input
+                  type='text'
+                  autoComplete='off'
+                  className='p-2 m-1 w-full bg-gray-600 rounded-lg cursor-pointer'
+                  onBlur={onBlur}
+                  onKeyDown={({ key }) => {
+                    if (key === 'Enter') {
+                      handleStepAdd()
+                      executeSubmit()
+                    }
+                  }}
+                  {...{ onChange, value, name, ref }}
+                />
+              )}
             />
-          ))}
-        </div>
+
+            <CrossButton
+              onClick={() => {
+                handleStepRemove(index)
+                executeSubmit()
+              }}
+            />
+          </div>
+        ))}
+
+        <PlusButton onClick={handleStepAdd} />
       </div>
     </>
   )

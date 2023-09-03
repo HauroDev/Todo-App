@@ -7,13 +7,15 @@ const DEFAULT_STATE = {
 }
 
 const initialState = (() => {
-  const previousState = localStorage.getItem('__todoapp__state__')
+  const previousState = JSON.parse(
+    localStorage.getItem('__todoapp__state__')
+  )?.user
 
   if (!previousState) {
     return DEFAULT_STATE
   }
 
-  return JSON.parse(previousState).user
+  return previousState
 })()
 
 export const userSlice = createSlice({

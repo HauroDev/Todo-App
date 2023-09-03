@@ -6,13 +6,15 @@ const DEFAULT_STATE = {
 }
 
 const initialState = (() => {
-  const previousState = localStorage.getItem('__todoapp__state__')
+  const previousState = JSON.parse(
+    localStorage.getItem('__todoapp__state__')
+  )?.task
 
   if (!previousState) {
     return DEFAULT_STATE
   }
 
-  return JSON.parse(previousState).task
+  return previousState
 })()
 
 export const taskSlice = createSlice({

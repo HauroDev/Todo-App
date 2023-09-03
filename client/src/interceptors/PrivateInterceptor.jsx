@@ -1,18 +1,19 @@
 import axios from 'axios'
 
-export const PrivateInterceptor = () => {
-  const updateHeader = (request) => {
-    const { token } = JSON.parse(
-      localStorage.getItem('__todoapp__state__')
-    ).user
+const updateHeader = (request) => {
+  const token = JSON.parse(localStorage.getItem('__todoapp__state__'))?.user
+    ?.token
+  if (token) {
     const newHeaders = {
       Authorization: `Bearer ${token}`
     }
 
     request.headers = newHeaders
-    return request
   }
+  return request
+}
 
+export const PrivateInterceptor = () => {
   axios.interceptors.request.use(
     (request) => {
       return updateHeader(request)

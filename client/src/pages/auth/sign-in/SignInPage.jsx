@@ -35,7 +35,6 @@ const SignInPage = () => {
         console.log(err)
       })
   }
-
   return (
     <form
       className='flex flex-col text-white bg-gray-600 rounded w-72 h-fit sm:w-96 pt-10 pb-2 px-4'
