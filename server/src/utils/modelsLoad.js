@@ -1,5 +1,5 @@
-const path = require('node:path')
-const { readdirSync } = require('node:fs')
+const path = require('path')
+const { readdirSync } = require('fs')
 const modelsDir = path.join(__dirname, '../models')
 
 const modelsLoad = (db) => {
