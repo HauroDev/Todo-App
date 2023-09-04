@@ -1,20 +1,19 @@
-import useTaskActions from '../../../hooks/useTaskActions'
-import useChangeStatus from './hooks/useChangeStatus'
-import CrossButton from '../../../components/CrossButton'
+import useTaskActions from '../../../../hooks/useTaskActions'
+import useChangeStatus from '../hooks/useChangeStatus'
+import CrossButton from '../../../../components/buttons/CrossButton'
 
 const TaskCard = ({
   title,
   id_task: idTask,
   id_user: idUser,
   status,
-  isVisible
+  onClick
 }) => {
-  const { getTaskDetail, getAllTasks, deleteTask, updateTask } =
-    useTaskActions()
+  const { getTasks, softDeleteTask, updateTask } = useTaskActions()
 
   const handlerChangeStatus = (newStatus) =>
     updateTask({ id_task: idTask, status: newStatus })
-      .then(() => Promise.all([getAllTasks(idUser), getTaskDetail(idTask)]))
+      .then(() => getTasks(idUser))
       .catch((error) => console.log(error))
 
   const { isOpen, StatusButtons, StatusButton } = useChangeStatus(
@@ -28,12 +27,12 @@ const TaskCard = ({
       {!isOpen && (
         <>
           <p
-            onClick={() => getTaskDetail(idTask).then(() => isVisible())}
+            onClick={onClick}
             className='p-2 m-1 w-full bg-gray-600 rounded-lg cursor-pointer'>
             {title}
           </p>
 
-          <CrossButton onClick={() => deleteTask(idTask)} />
+          <CrossButton onClick={() => softDeleteTask(idTask)} />
         </>
       )}
     </article>

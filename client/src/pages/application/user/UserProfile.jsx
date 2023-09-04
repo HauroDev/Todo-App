@@ -6,7 +6,7 @@ import { useUserActions } from '../../../hooks/useUserActions'
 import { UserDataSchema } from './schema'
 
 import ProfileDetailSVG from './ProfileDetailSVG'
-import SubmitButton from '../../../components/SubmitButton'
+import SubmitButton from '../../../components/buttons/SubmitButton'
 
 // decorar y optimizar carga de componente
 const UserProfile = () => {

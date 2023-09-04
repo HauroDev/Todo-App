@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp } from './MenuIcons'
 import AccessLinks from './AccessLinks'
 import { useLocation } from 'react-router-dom'
+import ButtonStyled from '../../buttons/ButtonStyled'
 
 const MovilMenu = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -16,14 +17,12 @@ const MovilMenu = () => {
 
   return (
     <div className='relative flex sm:hidden flex-col w-32'>
-      <button
-        className='block w-full rounded p-1 border-b-gray-950 hover:border-b-gray-200 active:border-b-gray-50 border-b-2 active:text-gray-500 active:border-gray-500 hover:bg-gray-600 duration-200'
-        onClick={toggleOpen}>
-        <span className='flex gap-2 justify-between'>
+      <ButtonStyled onClick={toggleOpen}>
+        <span className='flex justify-between'>
           Menu
           {!isOpen ? <ChevronDown /> : <ChevronUp />}
         </span>
-      </button>
+      </ButtonStyled>
       {isOpen && (
         <div className='flex flex-col gap-y-1 absolute top-[3.2rem] bg-gray-800 border-2 rounded-md p-2 w-full'>
           <AccessLinks />

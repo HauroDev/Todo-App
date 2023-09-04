@@ -7,6 +7,7 @@ import SignInSVG from './SignInSVG'
 import { SignInSchema } from './schema'
 import { useUserActions } from '../../../hooks/useUserActions'
 import { AppRoutes } from '../../../utils/routes/appRoutes'
+import SubmitButton from '../../../components/buttons/SubmitButton'
 
 const SignInPage = () => {
   const { loginUser } = useUserActions()
@@ -40,7 +41,7 @@ const SignInPage = () => {
       className='flex flex-col text-white bg-gray-600 rounded w-72 h-fit sm:w-96 pt-10 pb-2 px-4'
       onSubmit={handleSubmit(onSubmit)}>
       <h2 className='text-center text-4xl sm:text-5xl text-gray-200 font-bold my-2'>
-        ¡Bienvenido!
+        Iniciar Sesión
       </h2>
       <SignInSVG className='w-40 m-auto mb-4' />
       <div className='flex flex-col gap-3'>
@@ -57,12 +58,12 @@ const SignInPage = () => {
             type='text'
             {...register('username')}
           />
-          <div
+          <p
             className={`w-full pt-1 ${
               errors.username ? 'h-5' : 'h-0'
             } text-red-900 transform duration-200`}>
-            <p>{errors.username?.message}</p>
-          </div>
+            {errors.username?.message}
+          </p>
         </div>
         <div className='flex flex-wrap mb-1'>
           <label
@@ -77,19 +78,18 @@ const SignInPage = () => {
             type='password'
             {...register('password')}
           />
-          <div
+
+          <p
             className={`w-full pt-1 ${
-              errors.password ? 'h-4' : 'h-0'
+              errors.password ? 'h-5' : 'h-0'
             } text-red-900 transform duration-200`}>
-            <p>{errors.password?.message}</p>
-          </div>
+            {errors.password?.message}
+          </p>
         </div>
-        <button
+        <SubmitButton
           disabled={errors.username || errors.password}
-          className='bg-gray-700 rounded my-2 p-2 duration-200 hover:bg-gray-500 disabled:bg-gray-300'
-          type='submit'>
-          Ingresar
-        </button>
+          label='Ingresar'
+        />
       </div>
     </form>
   )

@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const DEFAULT_STATE = {
   tasks: [],
+  tasksDeleted: [],
   taskDetail: {}
 }
 
@@ -21,10 +22,13 @@ export const taskSlice = createSlice({
   name: 'task',
   initialState,
   reducers: {
-    getAll: (state, action) => {
+    setTasks: (state, action) => {
       return { ...state, tasks: [...action.payload] }
     },
-    getDetail: (state, action) => {
+    setTasksDeleted: (state, action) => {
+      return { ...state, tasksDeleted: [...action.payload] }
+    },
+    setDetail: (state, action) => {
       return { ...state, taskDetail: action.payload }
     },
     create: (state, action) => {
@@ -37,6 +41,12 @@ export const taskSlice = createSlice({
       return { ...state, tasks: [] }
     },
     remove: (state, action) => {
+      return {
+        ...state,
+        tasks: state.tasks.filter((task) => task.id_task !== action.payload)
+      }
+    },
+    destroy: (state, action) => {
       return {
         ...state,
         tasks: state.tasks.filter((task) => task.id_task !== action.payload)
@@ -58,14 +68,16 @@ export const taskSlice = createSlice({
 })
 
 export const {
-  getAll,
+  setTasks,
+  setTasksDeleted,
+  setDetail,
   clearDetail,
   clearAll,
   restore,
   create,
   remove,
-  update,
-  getDetail
+  destroy,
+  update
 } = taskSlice.actions
 
 export default taskSlice.reducer

@@ -14,86 +14,100 @@ const useTaskActions = () => {
     dispatch(Task.clearDetail())
   }, [])
 
-  const clearAllTasks = useCallback(() => {
+  const clearTasks = useCallback(() => {
     dispatch(Task.clearAll())
   }, [])
 
-  const getAllTasks = useCallback(async (id) => {
+  const getTasks = useCallback(async (idUser) => {
     try {
-      const { data } = await axios.get(`${ApiRoutes.task.all}?idUser=${id}`)
-      dispatch(Task.getAll(data))
+      const urlGetTask = `${ApiRoutes.task.all}?idUser=${idUser}`
+      const { data } = await axios.get(urlGetTask)
+      dispatch(Task.setTasks(data))
     } catch (error) {
-      toast.error('Problema de Conexión')
-      throw error
+      toast.error(`Error: ${error.message}`)
     }
   }, [])
 
-  const getTaskDetail = useCallback(async (id) => {
+  const getTasksDeleted = useCallback(async (idUser) => {
     try {
-      const { data } = await axios.get(`${ApiRoutes.task.base}/${id}`)
-      dispatch(Task.getDetail(data))
+      const urlGetTask = `${ApiRoutes.task.all}?idUser=${idUser}&deleted=true`
+      const { data } = await axios.get(urlGetTask)
+      dispatch(Task.setTasksDeleted(data))
     } catch (error) {
-      toast.error('Problema de Conexión')
-      throw error
+      toast.error(`Error: ${error.message}`)
     }
   }, [])
 
-  const createTask = useCallback(async (info) => {
+  const getTaskDetail = useCallback(async (idTask) => {
     try {
-      const { data } = await axios.post(ApiRoutes.task.create, info)
+      const { data } = await axios.get(`${ApiRoutes.task.base}/${idTask}`)
+      dispatch(Task.setDetail(data))
+    } catch (error) {
+      toast.error(`Error: ${error.message}`)
+    }
+  }, [])
+
+  const createTask = useCallback(async (dataTask) => {
+    try {
+      const { data } = await axios.post(ApiRoutes.task.create, dataTask)
       dispatch(Task.create(data))
       toast.success('Tarea Creada Correctamente')
     } catch (error) {
-      toast.error('Problema de Conexión')
-      throw error
+      toast.error(`Error: ${error.message}`)
     }
   }, [])
 
-  const deleteTask = useCallback(async (id) => {
+  const softDeleteTask = useCallback(async (idTask) => {
     try {
-      await axios.put(`${ApiRoutes.task.delete}/${id}`)
-      dispatch(Task.remove(id))
+      dispatch(Task.remove(idTask))
+      await axios.put(`${ApiRoutes.task.softDelete}/${idTask}`)
       toast.success('Tarea Borrada Correctamente')
     } catch (error) {
-      toast.error('Problema de Conexión')
-      throw error
+      toast.error(`Error: ${error.message}`)
     }
   }, [])
 
-  const restoreTask = useCallback(async (id) => {
+  const hardDeleteTask = useCallback(async (idTask) => {
     try {
-      await axios.put(`${ApiRoutes.task.restore}/${id}`)
-      const { data } = await axios.get(`${ApiRoutes.task.base}/${id}`)
+      dispatch(Task.destroy(idTask))
+      await axios.put(`${ApiRoutes.task.hardDelete}/${idTask}`)
+      toast.success('Tarea Eliminada Correctamente')
+    } catch (error) {
+      toast.error(`Error: ${error.message}`)
+    }
+  }, [])
+
+  const restoreTask = useCallback(async (idTask) => {
+    try {
+      await axios.put(`${ApiRoutes.task.restore}/${idTask}`)
+      const { data } = await axios.get(`${ApiRoutes.task.base}/${idTask}`)
       dispatch(Task.restore(data))
       toast.success('Tarea Restaurada Correctamente')
     } catch (error) {
-      toast.error('Problema de Conexión')
-      throw error
+      toast.error(`Error: ${error.message}`)
     }
   }, [])
 
   const updateTask = useCallback(async (data) => {
     try {
-      const updatedTask = await axios.put(
-        `${ApiRoutes.task.update}/${data.id_task}`,
-        data
-      )
+      dispatch(Task.update(data))
+      await axios.put(`${ApiRoutes.task.update}/${data.id_task}`, data)
 
-      dispatch(Task.update(updatedTask))
       toast.success('Tarea Actualizada Correctamente')
     } catch (error) {
-      toast.error('Problema de Conexión')
-      throw error
+      toast.error(`Error: ${error.message}`)
     }
   }, [])
 
   return {
     clearTaskDetail,
-    clearAllTasks,
-    getAllTasks,
+    clearTasks,
+    getTasks,
     getTaskDetail,
+    getTasksDeleted,
     createTask,
-    deleteTask,
+    softDeleteTask,
+    hardDeleteTask,
     restoreTask,
     updateTask
   }

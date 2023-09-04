@@ -41,8 +41,11 @@ class ApiRoutes {
       get create() {
         return `${self._taskBase}/create`
       },
-      get delete() {
+      get softDelete() {
         return `${self._taskBase}/delete`
+      },
+      get hardDelete() {
+        return `${self._taskBase}/delete/hard`
       },
       get restore() {
         return `${self._taskBase}/restore`

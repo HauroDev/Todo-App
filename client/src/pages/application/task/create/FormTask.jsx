@@ -6,9 +6,9 @@ import { taskSchema } from '../schemas'
 import { useUserSelector } from '../../../../hooks/store'
 import useTaskActions from '../../../../hooks/useTaskActions'
 
-import CrossButton from '../../../../components/CrossButton'
-import PlusButton from '../../../../components/PlusButton'
-import SubmitButton from '../../../../components/SubmitButton'
+import CrossButton from '../../../../components/buttons/CrossButton'
+import PlusButton from '../../../../components/buttons/PlusButton'
+import SubmitButton from '../../../../components/buttons/SubmitButton'
 
 const FormTask = ({
   callback,

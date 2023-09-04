@@ -2,24 +2,36 @@ import { useEffect } from 'react'
 
 import { useTaskSelector, useUserSelector } from '../../../hooks/store'
 import useTaskActions from '../../../hooks/useTaskActions'
-
-import TaskCard from './TaskCard'
-import CreateTask from './create/CreateTask'
 import useModal from '../../../hooks/useModal'
-import CrossMark from '../../../icons/CrossMark'
-import TaskDetail from './TaskDetail'
+
+import TaskCard from './visual/TaskCard'
+import TaskDetail from './visual/TaskDetail'
+import CreateTask from './create/CreateTask'
+
+import CrossButton from '../../../components/buttons/CrossButton'
+import TasksTrashed from './visual/TasksTrashed'
+import { useLocation } from 'react-router-dom'
+import { AppRoutes } from '../../../utils/routes/appRoutes'
 
 const Tasks = () => {
   const {
     dataUser: { id_user: idUser }
   } = useUserSelector()
   const { tasks } = useTaskSelector()
-  const { getAllTasks, clearAllTasks } = useTaskActions()
+  const { getTasks, getTaskDetail, clearTaskDetail, clearTasks } =
+    useTaskActions()
   const { ModalContainer, toggleModal } = useModal()
 
+  const { pathname } = useLocation()
+  const exitToTasks = () => {
+    if (pathname !== AppRoutes.home.Tasks) clearTasks()
+  }
+
   useEffect(() => {
-    getAllTasks(idUser)
-    return () => clearAllTasks()
+    if (!tasks.length) {
+      getTasks(idUser)
+    }
+    return () => exitToTasks()
   }, [])
 
   return (
@@ -29,11 +41,11 @@ const Tasks = () => {
       <ModalContainer>
         <div className='flex justify-between items-center'>
           <h4 className='text-3xl'>Detalle de la tarea</h4>
-          <button
-            onClick={toggleModal}
-            className='block w-fit bg-gray-700 rounded p-1 border-b-gray-950 hover:border-b-gray-200 active:border-b-gray-50 border-b-2 active:text-gray-500 active:border-gray-500 hover:bg-gray-500 duration-200'>
-            <CrossMark />
-          </button>
+          <CrossButton
+            onClick={() => {
+              clearTaskDetail().then(() => toggleModal())
+            }}
+          />
         </div>
         <TaskDetail />
       </ModalContainer>
@@ -42,11 +54,14 @@ const Tasks = () => {
         {tasks?.map((task) => (
           <TaskCard
             key={task.id_task}
-            isVisible={toggleModal}
+            onClick={() =>
+              getTaskDetail(task.id_task).then(() => toggleModal())
+            }
             {...task}
           />
         ))}
       </section>
+      <TasksTrashed />
     </>
   )
 }

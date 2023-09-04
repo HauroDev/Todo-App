@@ -1,7 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
 
 import SignUpSVG from './SignUpSVG'
 
@@ -15,7 +14,7 @@ const SignUpPage = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid, isDirty, dirtyFields }
+    formState: { errors, isValid, isDirty }
   } = useForm({
     defaultValues: {
       username: '',
@@ -41,28 +40,15 @@ const SignUpPage = () => {
       })
   }
 
-  const [changeFieldset, setChangeFieldset] = useState(1)
-
-  const nextFieldset = () => {
-    setChangeFieldset((p) => {
-      const next = p + 1
-      console.log(next)
-      return next
-    })
-  }
-
   return (
     <form
       className='flex flex-col text-white bg-gray-600 rounded w-72 h-fit sm:w-96 pt-10 pb-2 px-4'
       onSubmit={handleSubmit(onSubmit)}>
       <h2 className='text-center text-4xl sm:text-5xl text-gray-200 font-bold my-2'>
-        ¡Bienvenido!
+        Crear Cuenta
       </h2>
       <SignUpSVG className='w-40 m-auto mb-4' />
-      <fieldset
-        className={`${
-          changeFieldset === 1 ? 'flex' : 'hidden'
-        } flex-col gap-3`}>
+      <fieldset className='flex flex-col gap-3'>
         <div className='flex flex-wrap mb-1'>
           <label
             className='text-gray-300'
@@ -99,18 +85,8 @@ const SignUpPage = () => {
             <p>{errors.lastname?.message}</p>
           </div>
         </div>
-        <button
-          type='button'
-          onClick={nextFieldset}
-          disabled={!dirtyFields.firstname || !dirtyFields.lastname}
-          className='bg-gray-700 rounded my-2 p-2 duration-200 hover:bg-gray-500 disabled:bg-gray-300'>
-          Siguiente
-        </button>
       </fieldset>
-      <fieldset
-        className={`${
-          changeFieldset === 2 ? 'flex' : 'hidden'
-        } flex-col gap-3 duration-500`}>
+      <fieldset className='flex flex-col gap-3'>
         <div className='flex flex-wrap mb-1'>
           <label
             className='text-gray-300'
@@ -122,12 +98,12 @@ const SignUpPage = () => {
             placeholder='userSuper30123'
             {...register('username')}
           />
-          <div
+          <p
             className={`w-full pt-1 ${
               errors.username ? 'h-5' : 'h-0'
             } text-red-900 transform duration-200`}>
-            <p>{errors.username?.message}</p>
-          </div>
+            {errors.username?.message}
+          </p>
         </div>
         <div className='flex flex-wrap mb-1'>
           <label
@@ -147,18 +123,8 @@ const SignUpPage = () => {
             <p>{errors.email?.message}</p>
           </div>
         </div>
-        <button
-          type='button'
-          onClick={nextFieldset}
-          disabled={!dirtyFields.email || !dirtyFields.username}
-          className='bg-gray-700 rounded my-2 p-2 duration-200 hover:bg-gray-500 disabled:bg-gray-300'>
-          Siguiente
-        </button>
       </fieldset>
-      <fieldset
-        className={`${
-          changeFieldset === 3 ? 'flex' : 'hidden'
-        } flex-col gap-3`}>
+      <fieldset className='flex flex-col gap-3'>
         <div className='flex flex-wrap mb-1'>
           <label
             className='text-gray-300'
