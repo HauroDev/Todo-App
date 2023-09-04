@@ -6,7 +6,7 @@ module.exports = {
   PG_PASS: process.env.PG_PASS,
   PG_HOST: process.env.PG_HOST,
   NODE_ENV: process.env.NODE_ENV,
-  PORT: process.env.HOST,
+  PORT: process.env.PORT,
   JWT_SECRET: process.env.JWT_SECRET,
   SALT_OR_ROUNDS: process.env.SALT_OR_ROUNDS,
   URL_DEVELOPMENT: process.env.URL_DEVELOPMENT,
