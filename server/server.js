@@ -3,7 +3,14 @@ const morgan = require('morgan')
 const cors = require('cors')
 
 const { db } = require('./src/db')
-const { PORT } = require('./src/config')
+const {
+  PORT,
+  URL_CLIENT_DEVELOPMENT,
+  URL_CLIENT_PRODUCTION,
+  NODE_ENV,
+  URL_PRODUCTION,
+  URL_DEVELOPMENT
+} = require('./src/config')
 
 const routerApp = require('./src/router')
 
@@ -16,7 +23,21 @@ class Server {
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
 
-    this.app.use(cors({ origin: 'http://localhost:5173' }))
+    const originAllowed = [URL_CLIENT_DEVELOPMENT, URL_CLIENT_PRODUCTION]
+
+    this.app.use(
+      cors({
+        origin: (origin, callback) => {
+          if (!origin) return callback(null, true)
+          if (originAllowed.indexOf(origin) === -1) {
+            const msg =
+              'The CORS policy for this site does not allow access from the specified Origin.'
+            return callback(new Error(msg), false)
+          }
+          return callback(null, true)
+        }
+      })
+    )
     this.app.use('/api/v1', routerApp)
   }
 
@@ -26,7 +47,7 @@ class Server {
     })
   }
 
-  static async connectWithdb() {
+  static async connectWithDb() {
     try {
       await db.sync({ force: false })
       console.log('database connection successfully\n')
@@ -36,15 +57,22 @@ class Server {
   }
 
   static start() {
+    const url =
+      NODE_ENV === 'production' ? URL_PRODUCTION : URL_DEVELOPMENT + PORT
+
     this.app = express()
 
-    this.connectWithdb()
+    this.connectWithDb()
       .then(() => {
         this.middleware()
         this.methods()
         this.app.listen(PORT, () => {
-          console.log(`Server is running on port ${PORT}`)
-          console.log(`url: http://localhost:${PORT}`)
+          let message = 'Server is running'
+
+          message += NODE_ENV === 'production' ? '.' : ` on port ${PORT}.`
+
+          console.log(message)
+          console.log(`url: ${url}`)
           console.log('Press Ctrl+C to stop')
         })
       })
