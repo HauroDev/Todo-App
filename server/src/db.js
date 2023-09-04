@@ -5,7 +5,7 @@ const { modelsLoad } = require('./utils/modelsLoad')
 const optionsSequelize = {
   dialect: 'postgres',
   host: PG_HOST,
-  logging: console.log,
+  logging: NODE_ENV === 'production' ? null : console.log,
   dialectOptions: NODE_ENV === 'production' ? { ssl: true } : undefined
 }
 
