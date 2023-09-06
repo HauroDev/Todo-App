@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15.4
+    container_name: todo-app-database
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=haurodev
+      - POSTGRES_PASSWORD=supersecret
+      - POSTGRES_DB=todo-db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  client:
+    build: ./client
+    container_name: todo-app-client
+    ports:
+      - '5173:5173'
+    links:
+      - server
+    environment:
+      # esto lo podes cambiar solo si cambias los environments del servicio 'postgres', PG-NAME es igual a POSTGRES_DB
+      - PG_HOST=postgres
+      - PG_USER=haurodev
+      - PG_PASS=supersecret
+      - PG_NAME=todo-db
+
+    volumes:
+      - ./client:/usr/src/app/todo-app-client
+      - /usr/src/app/todo-app-client/node_modules
+
+  server:
+    build: ./server
+    container_name: todo-app-server
+    ports:
+      - '4001:4001'
+    depends_on:
+      - postgres
+    volumes:
+      - ./server:/usr/src/app/todo-app-server
+      - /usr/src/app/todo-app-server/node_modules
+
+volumes:
+  postgres-data:

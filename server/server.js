@@ -57,8 +57,7 @@ class Server {
   }
 
   static start() {
-    const url =
-      NODE_ENV === 'production' ? URL_PRODUCTION : URL_DEVELOPMENT + PORT
+    const url = NODE_ENV === 'production' ? URL_PRODUCTION : URL_DEVELOPMENT
 
     this.app = express()
 

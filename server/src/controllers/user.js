@@ -62,9 +62,7 @@ class UserController {
 
   static async login(req, res) {
     const userInfo = validationPartialUser(req.query)
-
-    console.log(userInfo)
-
+    
     try {
       if (!userInfo.success) {
         const message = userInfo.error.errors
@@ -78,9 +76,7 @@ class UserController {
         where: { username: userInfo.data.username }
       })
 
-      console.log(userDb)
-
-      const passwordCorrect =
+            const passwordCorrect =
         userDb === null
           ? false
           : await compare(userInfo.data.password, userDb.password)

@@ -36,7 +36,7 @@ const Tasks = () => {
 
   return (
     <>
-      <h3 className='mt-4 text-3xl text-center'>Tareas</h3>
+      <h3 className='mt-4 text-3xl text-center'>Tareas geniales</h3>
       <CreateTask />
       <ModalContainer>
         <div className='flex justify-between items-center'>

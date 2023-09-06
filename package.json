@@ -1,0 +1,29 @@
+{
+  "name": "todo-app",
+  "version": "1.0.0",
+  "description": "Aplicación de gestión de Tareas básico",
+  "scripts": {
+    "install:app": "concurrently \"cd server && npm install\" \"cd client && npm install\"",
+    "start:app": "concurrently \"cd server && npm start\" \"cd client && npm run build && npm run preview\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HauroEnojado/Todo-App.git"
+  },
+  "keywords": [
+    "todo-app",
+    "node",
+    "express",
+    "reactjs",
+    "vite"
+  ],
+  "author": "HauroDev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HauroEnojado/Todo-App/issues"
+  },
+  "homepage": "https://github.com/HauroEnojado/Todo-App#readme",
+  "devDependencies": {
+    "concurrently": "^8.2.1"
+  }
+}

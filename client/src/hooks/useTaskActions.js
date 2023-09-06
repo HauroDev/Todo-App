@@ -17,6 +17,9 @@ const useTaskActions = () => {
   const clearTasks = useCallback(() => {
     dispatch(Task.clearAll())
   }, [])
+  const clearTasksDeleted = useCallback(() => {
+    dispatch(Task.clearAllDeleted())
+  }, [])
 
   const getTasks = useCallback(async (idUser) => {
     try {
@@ -102,6 +105,7 @@ const useTaskActions = () => {
   return {
     clearTaskDetail,
     clearTasks,
+    clearTasksDeleted,
     getTasks,
     getTaskDetail,
     getTasksDeleted,

@@ -40,6 +40,9 @@ export const taskSlice = createSlice({
     clearAll: (state) => {
       return { ...state, tasks: [] }
     },
+    clearAllDeleted: (state) => {
+      return { ...state, tasksDeleted: [] }
+    },
     remove: (state, action) => {
       return {
         ...state,
@@ -73,6 +76,7 @@ export const {
   setDetail,
   clearDetail,
   clearAll,
+  clearAllDeleted,
   restore,
   create,
   remove,
