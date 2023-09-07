@@ -2,7 +2,7 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 
-const { db } = require('./src/db')
+const { db } = require('./db')
 const {
   PORT,
   URL_CLIENT_DEVELOPMENT,
@@ -10,9 +10,9 @@ const {
   NODE_ENV,
   URL_PRODUCTION,
   URL_DEVELOPMENT
-} = require('./src/config')
+} = require('./config')
 
-const routerApp = require('./src/router')
+const routerApp = require('./router')
 
 class Server {
   static middleware() {

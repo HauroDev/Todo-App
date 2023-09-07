@@ -20,13 +20,6 @@ services:
       - '5173:5173'
     links:
       - server
-    environment:
-      # esto lo podes cambiar solo si cambias los environments del servicio 'postgres', PG-NAME es igual a POSTGRES_DB
-      - PG_HOST=postgres
-      - PG_USER=haurodev
-      - PG_PASS=supersecret
-      - PG_NAME=todo-db
-
     volumes:
       - ./client:/usr/src/app/todo-app-client
       - /usr/src/app/todo-app-client/node_modules
@@ -38,6 +31,20 @@ services:
       - '4001:4001'
     depends_on:
       - postgres
+    environment:
+      # esto lo podes cambiar solo si cambias los environments del servicio 'postgres', PG-NAME es igual a POSTGRES_DB
+      - PG_HOST=postgres
+      - PG_USER=haurodev
+      - PG_PASS=supersecret
+      - PG_NAME=todo-db
+      - NODE_ENV=development
+      - PORT=4001
+      - URL_DEVELOPMENT=http://localhost:4001
+      - URL_CLIENT_DEVELOPMENT=http://localhost:5173
+      - JWT_SECRET=secret
+      - SALT_OR_ROUNDS=10
+      - URL_CLIENT_PRODUCTION=http://localhost:4173
+      - URL_PRODUCTION=https://www.platform-development.org/example
     volumes:
       - ./server:/usr/src/app/todo-app-server
       - /usr/src/app/todo-app-server/node_modules

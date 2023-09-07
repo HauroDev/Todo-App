@@ -4,7 +4,7 @@
   "description": "Aplicación de gestión de Tareas básico",
   "scripts": {
     "install:app": "concurrently \"cd server && npm install\" \"cd client && npm install\"",
-    "start:app": "concurrently \"cd server && npm start\" \"cd client && npm run build && npm run preview\""
+    "start:app": "concurrently \"cd server && npm start\" \"cd client && npm run build && npm run preview -- --open\""
   },
   "repository": {
     "type": "git",
