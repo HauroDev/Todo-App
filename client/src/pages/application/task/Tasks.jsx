@@ -10,44 +10,44 @@ import CreateTask from './create/CreateTask'
 
 import CrossButton from '../../../components/buttons/CrossButton'
 import TasksTrashed from './visual/TasksTrashed'
-import { useLocation } from 'react-router-dom'
-import { AppRoutes } from '../../../utils/routes/appRoutes'
+import { TaskDetailProvider } from './contexts/TaskDetailContext'
 
-const Tasks = () => {
+const useGetTaskUser = () => {
+  const { getTasks, clearTasks } = useTaskActions()
+
   const {
     dataUser: { id_user: idUser }
   } = useUserSelector()
-  const { tasks } = useTaskSelector()
-  const { getTasks, getTaskDetail, clearTaskDetail, clearTasks } =
-    useTaskActions()
-  const { ModalContainer, toggleModal } = useModal()
-
-  const { pathname } = useLocation()
-  const exitToTasks = () => {
-    if (pathname !== AppRoutes.home.Tasks) clearTasks()
-  }
 
   useEffect(() => {
-    if (!tasks.length) {
-      getTasks(idUser)
-    }
-    return () => exitToTasks()
+    getTasks(idUser)
+    return () => clearTasks()
   }, [])
+}
+
+const Tasks = () => {
+  const { tasks } = useTaskSelector()
+  const { getTaskDetail, clearTaskDetail } = useTaskActions()
+  const { ModalContainer, toggleModal } = useModal()
+
+  useGetTaskUser()
 
   return (
     <>
-      <h3 className='mt-4 text-3xl text-center'>Tareas geniales</h3>
+      <h2 className='mt-4 text-3xl text-center'>Tareas</h2>
       <CreateTask />
       <ModalContainer>
         <div className='flex justify-between items-center'>
-          <h4 className='text-3xl'>Detalle de la tarea</h4>
+          <h3 className='text-3xl'>Detalle de la tarea</h3>
           <CrossButton
             onClick={() => {
               clearTaskDetail().then(() => toggleModal())
             }}
           />
         </div>
-        <TaskDetail />
+        <TaskDetailProvider>
+          <TaskDetail />
+        </TaskDetailProvider>
       </ModalContainer>
 
       <section className='flex-grow flex flex-col'>
@@ -61,6 +61,7 @@ const Tasks = () => {
           />
         ))}
       </section>
+
       <TasksTrashed />
     </>
   )

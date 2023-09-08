@@ -5,21 +5,19 @@ import useModal from '../../../../hooks/useModal'
 import FormTask from './FormTask'
 
 const CreateTask = () => {
-  const { ModalContainer, toggleModal, isOpen } = useModal()
+  const { ModalContainer, toggleModal } = useModal()
 
   return (
     <div className='my-3'>
       <ModalContainer>
         <div className='flex justify-between items-center'>
-          <h4>Formulario</h4>
+          <h4 className='text-4xl font-bold italic'>Formulario</h4>
           <CrossButton onClick={toggleModal} />
         </div>
         <FormTask callback={toggleModal} />
       </ModalContainer>
 
-      {!isOpen && (
-        <ButtonStyled onClick={toggleModal}>Crear Tarea</ButtonStyled>
-      )}
+      <ButtonStyled onClick={toggleModal}>Crear Tarea</ButtonStyled>
     </div>
   )
 }
