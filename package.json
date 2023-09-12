@@ -5,11 +5,11 @@
   "scripts": {
     "install:app": "concurrently \"cd server && npm install\" \"cd client && npm install\"",
     "start:app": "concurrently \"cd server && npm start\" \"cd client && npm run build && npm run preview -- --open\"",
-    "dev:app": "concurrently \"cd server && npm run dev\" \"cd client && npm run build && npm run dev -- --open\""
+    "dev:app": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev -- --open\""
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HauroEnojado/Todo-App.git"
+    "url": "git+https://github.com/HauroDev/Todo-App.git"
   },
   "keywords": [
     "todo-app",
