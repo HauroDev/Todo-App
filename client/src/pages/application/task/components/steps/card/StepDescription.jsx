@@ -1,6 +1,6 @@
 import { Controller } from 'react-hook-form'
-import { useTaskSelector } from '../../../../../hooks/store'
-import useTaskDetail from '../../hooks/useTaskDetail'
+import { useTaskSelector } from '../../../../../../hooks/store'
+import useTaskDetail from '../../../hooks/useTaskDetail'
 
 const StepDescription = ({ index, handleStepRemove }) => {
   const { taskDetail } = useTaskSelector()

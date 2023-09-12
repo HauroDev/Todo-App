@@ -6,10 +6,15 @@ export const signUpSchema = z
       .string()
       .nonempty({ message: 'falta su nombre de usuario' })
       .regex(/^[A-Za-z0-9_-]+$/, { message: 'no debe contener espacios' }),
-    password: z.string().nonempty({ message: 'falta su contraseña' }),
-    passwordConfirmation: z
+    password: z
       .string()
-      .nonempty({ message: 'falta su confirmación de contraseña' }),
+      .min(8, { message: 'la contraseña debe tener al menos 8 caracteres' })
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]+$/, {
+        message:
+          'la contraseña debe contener al menos una letra mayúscula, una letra minúscula y un número'
+      })
+      .nullable(),
+    passwordConfirmation: z.string().nonempty(),
     email: z
       .string()
       .email({ message: 'formato no valido de correo' })

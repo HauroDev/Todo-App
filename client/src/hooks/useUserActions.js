@@ -17,8 +17,7 @@ export const useUserActions = () => {
 
       toast.success('Sesión Iniciada Correctamente')
     } catch (error) {
-      toast.error('Problema de Conexión')
-      throw error
+      toast.error(`Error: ${error.message}`)
     }
   }
 
@@ -30,8 +29,7 @@ export const useUserActions = () => {
 
       toast.success('Sesión Finalizada Correctamente')
     } catch (error) {
-      toast.error('Problema de Conexión')
-      throw error
+      toast.error(`Error: ${error.message}`)
     }
   }
 
@@ -41,8 +39,7 @@ export const useUserActions = () => {
       dispatch(User.signUp(data))
       toast.success('Registro e Inicio de Sesión completado')
     } catch (error) {
-      toast.error('Problema de Conexión')
-      throw error
+      toast.error(`Error: ${error.message}`)
     }
   }
 
@@ -55,10 +52,18 @@ export const useUserActions = () => {
       dispatch(User.update(data))
       toast.success('Datos de Usuario Actualizados Correctamente')
     } catch (error) {
-      toast.error('Problema de Conexión')
-      throw error
+      toast.error(`Error: ${error.message}`)
     }
   }
 
-  return { loginUser, logoutUser, registerUser, updateInfo }
+  const getInfo = async (id) => {
+    try {
+      const { data } = await axios.get(`${ApiRoutes.user.base}/${id}`)
+      dispatch(User.setData(data))
+    } catch (error) {
+      toast.error(`Error: ${error.message}`)
+    }
+  }
+
+  return { loginUser, logoutUser, registerUser, updateInfo, getInfo }
 }

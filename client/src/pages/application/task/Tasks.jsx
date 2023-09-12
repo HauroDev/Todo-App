@@ -4,12 +4,12 @@ import { useTaskSelector, useUserSelector } from '../../../hooks/store'
 import useTaskActions from '../../../hooks/useTaskActions'
 import useModal from '../../../hooks/useModal'
 
-import TaskCard from './visual/TaskCard'
-import TaskDetail from './visual/TaskDetail'
+import TaskCard from './components/TaskCard'
+import TaskDetail from './components/TaskDetail'
 import CreateTask from './create/CreateTask'
 
 import CrossButton from '../../../components/buttons/CrossButton'
-import TasksTrashed from './visual/TasksTrashed'
+import TasksTrashed from './components/TasksTrashed'
 import { TaskDetailProvider } from './contexts/TaskDetailContext'
 
 const useGetTaskUser = () => {

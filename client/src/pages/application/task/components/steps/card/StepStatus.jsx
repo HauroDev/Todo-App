@@ -1,6 +1,6 @@
 import { Controller } from 'react-hook-form'
 import StatusChanger from './StatusChanger'
-import useTaskDetail from '../../hooks/useTaskDetail'
+import useTaskDetail from '../../../hooks/useTaskDetail'
 
 const StepStatus = ({ index }) => {
   const { control, setValue, handleSubmit } = useTaskDetail()
