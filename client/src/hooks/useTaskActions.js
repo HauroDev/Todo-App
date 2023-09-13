@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { ApiRoutes } from '../utils/routes/apiRoutes'
+import { ApiRoutes } from '../utils/routers/api'
 import { useTaskDispatch } from './store'
 
 import * as Task from '../store/slices/taskSlice'

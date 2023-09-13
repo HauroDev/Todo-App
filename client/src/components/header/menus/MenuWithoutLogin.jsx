@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { AppRoutes } from '../../../utils/routes/appRoutes'
+import { AppRoutes } from '../../../utils/routers/app'
 import ButtonStyled from '../../buttons/ButtonStyled'
 
 const MenuWithoutLogin = () => {

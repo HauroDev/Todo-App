@@ -1,7 +1,7 @@
 import axios from 'axios'
 import * as User from '../store/slices/userSlice'
 import { useUserDispatch } from './store'
-import { ApiRoutes } from '../utils/routes/apiRoutes'
+import { ApiRoutes } from '../utils/routers/api'
 import { toast } from 'react-toastify'
 
 export const useUserActions = () => {

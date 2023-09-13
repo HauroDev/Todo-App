@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { AppRoutes } from '../../utils/routes/appRoutes'
+import { AppRoutes } from '../../utils/routers/app'
 import MenuWithoutLogin from './menus/MenuWithoutLogin'
 import MenuWithLogin from './menus/MenuWithLogin'
 import { useUserSelector } from '../../hooks/store'

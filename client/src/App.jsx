@@ -1,13 +1,13 @@
 import { useLocation } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-
-import { AppRoutes } from './utils/routes/appRoutes'
+import { PrivateInterceptor } from './interceptors/PrivateInterceptor'
 
 import Header from './components/header/Header'
-import AppRouter from './components/router/AppRouter'
 import Footer from './components/Footer'
-import { PrivateInterceptor } from './interceptors/PrivateInterceptor'
+
+import { AppRoutes } from './utils/routers/app'
+import AppRouter from './app/router/AppRouter'
 
 PrivateInterceptor()
 
