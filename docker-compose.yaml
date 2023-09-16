@@ -44,7 +44,7 @@ services:
       - JWT_SECRET=secret
       - SALT_OR_ROUNDS=10
       - URL_CLIENT_PRODUCTION=http://localhost:4173
-      - URL_PRODUCTION=https://www.platform-development.org/example
+      - URL_PRODUCTION=https://www.platform-production.org/example
     volumes:
       - ./server:/usr/src/app/todo-app-server
       - /usr/src/app/todo-app-server/node_modules
