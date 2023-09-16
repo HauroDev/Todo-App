@@ -1,18 +1,14 @@
-import ProfileDetailSVG from './components/ProfileDetailSVG'
 import UserUpdateProfile from './components/UserUpdateProfile'
 
 const UserProfile = () => {
   return (
-    <>
-      <div className='text-center'>
+    <section className='bg-gray-600 rounded p-5 m-2 sm:mb-auto'>
+      <article>
         <h2 className='text-3xl'>Datos de Cuenta</h2>
         <p className='text-xl'>Aquí puedes actualizar tus datos</p>
-      </div>
-      <div className='flex flex-col-reverse justify-center sm:flex-row gap-10'>
-        <UserUpdateProfile />
-        <ProfileDetailSVG className='w-72' />
-      </div>
-    </>
+      </article>
+      <UserUpdateProfile />
+    </section>
   )
 }
 

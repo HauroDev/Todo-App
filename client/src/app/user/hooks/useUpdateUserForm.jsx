@@ -23,15 +23,32 @@ const useUpdateUserForm = (
     resolver: zodResolver(UserSchema)
   })
 
+  const cleanField = (value) => value.trim()
+
   const onSubmit = () => {
     const formData = getValues()
+    const cleanedFormData = {
+      ...formData,
+      firstname: cleanField(formData.firstname),
+      lastname: cleanField(formData.lastname),
+      username: cleanField(formData.username),
+      email: cleanField(formData.email)
+    }
 
-    setValue('firstname', formData.firstname.trim())
-    setValue('lastname', formData.lastname.trim())
-    setValue('username', formData.username.trim())
-    setValue('email', formData.email.trim())
+    const isDataChanged =
+      cleanedFormData.firstname !== dataUser.firstname ||
+      cleanedFormData.lastname !== dataUser.lastname ||
+      cleanedFormData.username !== dataUser.username ||
+      cleanedFormData.email !== dataUser.email
 
-    handleSubmit(onValid, onInvalid)()
+    if (isDataChanged) {
+      setValue('firstname', cleanedFormData.firstname)
+      setValue('lastname', cleanedFormData.lastname)
+      setValue('username', cleanedFormData.username)
+      setValue('email', cleanedFormData.email)
+
+      handleSubmit(onValid, onInvalid)()
+    }
   }
 
   return {

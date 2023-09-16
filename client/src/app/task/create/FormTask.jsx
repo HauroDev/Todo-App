@@ -1,7 +1,7 @@
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { taskSchema } from '../schemas'
+import { taskSchema } from '../utils/schemas'
 
 import { useUserSelector } from '../../../hooks/store'
 import useTaskActions from '../../../hooks/useTaskActions'
@@ -70,7 +70,7 @@ const FormTask = ({
         <textarea
           autoComplete='off'
           className='w-full p-1 mt-4 bg-gray-600 rounded-md'
-          placeholder='Descripción'
+          placeholder='Descripción (opcional)'
           {...register('description')}
         />
       </fieldset>

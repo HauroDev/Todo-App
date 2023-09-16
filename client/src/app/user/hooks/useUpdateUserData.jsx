@@ -17,6 +17,7 @@ const useUpdateUserData = ({ schema }) => {
       reset()
     }
   )
+
   return { onSubmit, register }
 }
 export default useUpdateUserData

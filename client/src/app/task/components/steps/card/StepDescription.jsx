@@ -18,7 +18,8 @@ const StepDescription = ({ index, handleStepRemove }) => {
             taskDetail.steps?.[index]?.label !== value
 
           if (isValueEmpty) handleStepRemove(index)
-          else if (isLabelChanged) handleSubmit()
+
+          if (isLabelChanged) handleSubmit()
         }
       }}
       render={({ field: { onChange, value, name, ref, onBlur } }) => (

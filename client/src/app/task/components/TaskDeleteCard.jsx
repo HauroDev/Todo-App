@@ -22,9 +22,7 @@ const TaskDeleteCard = (props) => {
 
   return (
     <article className='flex flex-row gap-1 items-center rounded-lg bg-gray-900 m-1 p-2'>
-      <p className='p-2 m-1 w-full bg-gray-600 rounded-lg cursor-pointer'>
-        {props.title}
-      </p>
+      <p className='p-2 m-1 w-full bg-gray-600 rounded-lg'>{props.title}</p>
       <CrossButton onClick={destroyTask} />
       <PlusButton onClick={revertTask} />
     </article>

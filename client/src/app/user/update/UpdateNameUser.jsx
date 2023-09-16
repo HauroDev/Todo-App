@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import SubmitButton from '../../../components/buttons/SubmitButton'
+
 import UserForm from '../components/UserForm'
 import UserInput from '../components/UserInput'
 import useUpdateUserData from '../hooks/useUpdateUserData'
-import ButtonStyled from '../../../components/buttons/ButtonStyled'
-import PencilIcon from '../../../icons/PencilIcon'
+
 import { nameSchema } from '../utils/schemas'
+import EditButton from '../../../components/buttons/EditButton'
+import CheckButton from '../../../components/buttons/CheckButton'
 
 const UpdateNameUser = () => {
   const { onSubmit, register } = useUpdateUserData({ schema: nameSchema })
@@ -27,14 +28,9 @@ const UpdateNameUser = () => {
       />
 
       {!isEdit ? (
-        <ButtonStyled
-          onClick={() => setIsEdit(true)}
-          className='max-w-fit'>
-          <PencilIcon />
-        </ButtonStyled>
+        <EditButton onClick={() => setIsEdit(true)} />
       ) : (
-        <SubmitButton
-          label='Actualizar'
+        <CheckButton
           onClick={() => {
             setIsEdit(false)
             onSubmit()

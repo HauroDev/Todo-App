@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { statusSchema } from '../schemas'
+import { statusSchema } from '../utils/schemas'
+import StatusButtons from '../components/status/StatusButtons'
+import StatusButton from '../components/status/StatusButton'
 
 const useOpen = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -8,12 +10,15 @@ const useOpen = () => {
   return { isOpen, toggleOpen }
 }
 
-const useChangeStatus = (initialStatus, callback = (state) => {}) => {
+const useChangeStatus = (
+  initialStatus,
+  callback = (state) => console.log(state)
+) => {
   const { isOpen, toggleOpen } = useOpen()
 
   const [status, setStatus] = useState(initialStatus)
-  const changeStatus = (event) => {
-    const statusValid = statusSchema.safeParse(event.target.value)
+  const changeStatus = ({ target: { value } }) => {
+    const statusValid = statusSchema.safeParse(value)
 
     if (statusValid.success) {
       setStatus(statusValid.data)
@@ -22,46 +27,12 @@ const useChangeStatus = (initialStatus, callback = (state) => {}) => {
     }
   }
 
-  const StatusButton = () => (
-    <button
-      onClick={toggleOpen}
-      className={`${
-        status === 'pending'
-          ? 'text-orange-600 border-orange-600'
-          : status === 'in progress'
-          ? 'text-yellow-600 border-yellow-600'
-          : 'text-green-600 border-green-600'
-      } border-2 p-1 rounded-lg`}>
-      {status}
-    </button>
-  )
-
-  const StatusButtons = () => (
-    <>
-      <button
-        onClick={changeStatus}
-        value='pending'
-        className='text-orange-600 border-orange-600 border-2 p-1 rounded-lg'>
-        pending
-      </button>
-
-      <button
-        onClick={changeStatus}
-        value='in progress'
-        className='text-yellow-600 border-yellow-600 border-2 p-1 rounded-lg'>
-        in progress
-      </button>
-
-      <button
-        onClick={changeStatus}
-        value='completed'
-        className='text-green-600 border-green-600 border-2 p-1 rounded-lg'>
-        completed
-      </button>
-    </>
-  )
-
-  return { isOpen, StatusButtons, toggleOpen, StatusButton }
+  return {
+    isOpen,
+    StatusButtons: StatusButtons({ changeStatus }),
+    toggleOpen,
+    StatusButton: StatusButton({ toggleOpen, status })
+  }
 }
 
 export default useChangeStatus

@@ -2,8 +2,9 @@ class AppRoutes {
   constructor() {
     this._root = '/'
     this._home = '/home'
-    this._auth = '/auth'
     this._profile = '/profile'
+    this._tasks = '/tasks'
+    this._auth = '/auth'
     this._dashboard = '/dashboard'
   }
 
@@ -17,17 +18,19 @@ class AppRoutes {
       get base() {
         return self._home
       },
-      get Tasks() {
-        return `${self._home}/tasks`
+      get tasks() {
+        const tasksUrl = `${self._home}${self._tasks}`
+        return {
+          get base() {
+            return tasksUrl
+          }
+        }
       },
       get profile() {
         const profileUrl = `${self._home}${self._profile}`
         return {
           get base() {
             return profileUrl
-          },
-          get edit() {
-            return `${profileUrl}/edit`
           }
         }
       }

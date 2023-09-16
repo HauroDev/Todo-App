@@ -7,8 +7,10 @@ import SignUpSVG from './SignUpSVG'
 import { signUpSchema } from './utils/schema'
 import { AppRoutes } from '../../../utils/routers/app'
 import { useUserActions } from '../../../hooks/useUserActions'
+import SubmitButton from '../../../components/buttons/SubmitButton'
+import LinkButton from '../../../components/buttons/LinkButton'
 
-const SignUpPage = () => {
+const UseSignUpForm = () => {
   const { registerUser } = useUserActions()
 
   const {
@@ -40,136 +42,114 @@ const SignUpPage = () => {
       })
   }
 
+  return {
+    register,
+    handleSubmit,
+    errors,
+    isValid,
+    isDirty,
+    onSubmit
+  }
+}
+
+const RegisterInput = ({
+  register,
+  name,
+  placeholder,
+  label,
+  type = 'text'
+}) => {
   return (
-    <form
-      className='flex flex-col text-white bg-gray-600 rounded w-72 h-fit sm:w-96 pt-10 pb-2 px-4'
-      onSubmit={handleSubmit(onSubmit)}>
-      <h2 className='text-center text-4xl sm:text-5xl text-gray-200 font-bold my-2'>
-        Crear Cuenta
-      </h2>
-      <SignUpSVG className='w-40 m-auto mb-4' />
-      <fieldset className='flex flex-col gap-3'>
-        <div className='flex flex-wrap mb-1'>
-          <label
-            className='text-gray-300'
-            htmlFor='firstname'>
-            Nombre
-          </label>
-          <input
-            className='pl-1 w-full rounded text-gray-900 placeholder:text-gray-400'
-            placeholder='Joe'
-            {...register('firstname')}
-          />
-          <div
-            className={`w-full pt-1 ${
-              errors.firstname ? 'h-5' : 'h-0'
-            } text-red-900 transform duration-200`}>
-            <p>{errors.firstname?.message}</p>
-          </div>
-        </div>
-        <div className='flex flex-wrap mb-1'>
-          <label
-            className='text-gray-300'
-            htmlFor='lastname'>
-            Apellido
-          </label>
-          <input
-            className='pl-1 w-full rounded text-gray-900 placeholder:text-gray-400'
-            placeholder='Doe'
-            {...register('lastname')}
-          />
-          <div
-            className={`w-full pt-1 ${
-              errors.lastname ? 'h-4' : 'h-0'
-            } text-red-900 transform duration-200`}>
-            <p>{errors.lastname?.message}</p>
-          </div>
-        </div>
-      </fieldset>
-      <fieldset className='flex flex-col gap-3'>
-        <div className='flex flex-wrap mb-1'>
-          <label
-            className='text-gray-300'
-            htmlFor='username'>
-            Nombre de usuario
-          </label>
-          <input
-            className='pl-1 w-full rounded text-gray-900 placeholder:text-gray-400'
-            placeholder='userSuper30123'
-            {...register('username')}
-          />
-          <p
-            className={`w-full pt-1 ${
-              errors.username ? 'h-5' : 'h-0'
-            } text-red-900 transform duration-200`}>
-            {errors.username?.message}
-          </p>
-        </div>
-        <div className='flex flex-wrap mb-1'>
-          <label
-            className='text-gray-300'
-            htmlFor='email'>
-            Correo Electrónico
-          </label>
-          <input
-            className='pl-1 w-full rounded text-gray-900 placeholder:text-gray-400'
-            placeholder='Doe'
-            {...register('email')}
-          />
-          <div
-            className={`w-full pt-1 ${
-              errors.email ? 'h-4' : 'h-0'
-            } text-red-900 transform duration-200`}>
-            <p>{errors.email?.message}</p>
-          </div>
-        </div>
-      </fieldset>
-      <fieldset className='flex flex-col gap-3'>
-        <div className='flex flex-wrap mb-1'>
-          <label
-            className='text-gray-300'
-            htmlFor='password'>
-            Contraseña
-          </label>
-          <input
-            className='pl-1 w-full rounded text-gray-900 placeholder:text-gray-400'
-            type='password'
-            {...register('password')}
-          />
-          <div
-            className={`w-full pt-1 ${
-              errors.password ? 'h-5' : 'h-0'
-            } text-red-900 transform duration-200`}>
-            <p>{errors.password?.message}</p>
-          </div>
-        </div>
-        <div className='flex flex-wrap mb-1'>
-          <label
-            className='text-gray-300'
-            htmlFor='passwordConfirmation'>
-            Confirma tu contraseña
-          </label>
-          <input
-            className='pl-1 w-full rounded text-gray-900 placeholder:text-gray-400'
-            type='password'
-            {...register('passwordConfirmation')}
-          />
-          <div
-            className={`w-full pt-1 ${
-              errors.passwordConfirmation ? 'h-4' : 'h-0'
-            } text-red-900 transform duration-200`}>
-            <p>{errors.passwordConfirmation?.message}</p>
-          </div>
-        </div>
-        <button
-          disabled={!isDirty || !isValid}
-          className='bg-gray-700 rounded my-2 p-2 duration-200 hover:bg-gray-500 disabled:bg-gray-300'
-          type='submit'>
-          Enviar
-        </button>
-      </fieldset>
-    </form>
+    <div className='flex flex-wrap mb-1'>
+      <label
+        className='text-gray-300'
+        htmlFor={name}>
+        {label}
+      </label>
+      <input
+        type={type}
+        className='pl-1 w-full rounded text-gray-900 placeholder:text-gray-400'
+        placeholder={placeholder}
+        {...register(name)}
+      />
+    </div>
   )
 }
 
-export default SignUpPage
+const RegisterSection = ({ children }) => {
+  return <fieldset className='flex flex-col my-2'>{children}</fieldset>
+}
+
+const SignUp = () => {
+  const { register, handleSubmit, onSubmit, isDirty, isValid } = UseSignUpForm()
+
+  return (
+    <div className='bg-gray-600 rounded px-4 pt-4 pb-6'>
+      <h2 className='text-4xl text-center'>Crear Cuenta</h2>
+      <div className='flex flex-col sm:flex-row justify-center gap-10'>
+        <div className='order-1 my-4 mx-auto flex flex-col justify-center items-center sm:order-2 min-w-[10rem] sm:max-w-[20rem]'>
+          <SignUpSVG className='w-[10rem] sm:w-[20rem]' />
+          <div className='mt-4'>
+            <LinkButton to={AppRoutes.landing}>Volver</LinkButton>
+          </div>
+        </div>
+        <form
+          className='order-2 sm:order-1 max-w-[20rem]'
+          onSubmit={handleSubmit(onSubmit)}>
+          <RegisterSection>
+            <RegisterInput
+              register={register}
+              name='firstname'
+              label='Nombre'
+              placeholder='Joe'
+            />
+            <RegisterInput
+              register={register}
+              name='lastname'
+              label='Apellido'
+              placeholder='Doe'
+            />
+          </RegisterSection>
+          <RegisterSection>
+            <RegisterInput
+              register={register}
+              name='email'
+              label='Correo electrónico'
+              placeholder='joe_doe@me.com'
+            />
+            <RegisterInput
+              register={register}
+              name='username'
+              label='Nombre de usuario'
+              placeholder='joe_doe'
+            />
+          </RegisterSection>
+          <RegisterSection>
+            <RegisterInput
+              register={register}
+              name='password'
+              label='Contraseña'
+              placeholder='Contraseña'
+              type='password'
+            />
+            <RegisterInput
+              register={register}
+              name='passwordConfirmation'
+              label='Confirmar contraseña'
+              placeholder='Confirmar contraseña'
+              type='password'
+            />
+          </RegisterSection>
+
+          <SubmitButton
+            className='mt-4'
+            disabled={!isDirty || !isValid}
+            label='Enviar'
+          />
+        </form>
+      </div>
+    </div>
+  )
+}
+
+export default SignUp

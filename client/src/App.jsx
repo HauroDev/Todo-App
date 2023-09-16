@@ -7,7 +7,7 @@ import Header from './components/header/Header'
 import Footer from './components/Footer'
 
 import { AppRoutes } from './utils/routers/app'
-import AppRouter from './app/router/AppRouter'
+import AppRouter from './components/router/AppRouter'
 
 PrivateInterceptor()
 
@@ -22,9 +22,9 @@ const App = () => {
       </main>
       <Footer />
       <ToastContainer
-        toastClassName='m-10'
-        position='bottom-right'
-        autoClose={1500}
+        toastClassName='m-10 bg-gray-900'
+        position='top-center'
+        autoClose={750}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

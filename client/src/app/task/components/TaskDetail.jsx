@@ -1,11 +1,20 @@
 import Steps from './steps/Steps'
 import useTaskDetail from '../hooks/useTaskDetail'
+import StatusChanger from './status/StatusChanger'
 
 const TaskDetail = () => {
-  const { handleBlur, register } = useTaskDetail()
+  const { handleBlur, register, taskDetail, setValue, handleSubmit } =
+    useTaskDetail()
 
   return (
-    <>
+    <div className='overflow-x-scroll'>
+      <StatusChanger
+        initialValue={taskDetail.status}
+        onChange={(newStatus) => {
+          setValue('status', newStatus)
+          handleSubmit()
+        }}
+      />
       <input
         type='text'
         autoComplete='off'
@@ -20,7 +29,7 @@ const TaskDetail = () => {
         {...register('description', { onBlur: handleBlur })}
       />
       <Steps />
-    </>
+    </div>
   )
 }
 

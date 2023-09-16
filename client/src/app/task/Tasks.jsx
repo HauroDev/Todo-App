@@ -12,8 +12,11 @@ import CreateTask from './create/CreateTask'
 import TasksTrashed from './components/TasksTrashed.jsx'
 import { TaskDetailProvider } from './contexts/TaskDetailContext'
 
-const useGetTaskUser = () => {
-  const { getTasks, clearTasks } = useTaskActions()
+const Tasks = () => {
+  const { tasks } = useTaskSelector()
+  const { getTaskDetail, clearTaskDetail, getTasks, clearTasks } =
+    useTaskActions()
+  const { ModalContainer, toggleModal } = useModal()
 
   const {
     dataUser: { id_user: idUser }
@@ -23,14 +26,6 @@ const useGetTaskUser = () => {
     getTasks(idUser)
     return () => clearTasks()
   }, [])
-}
-
-const Tasks = () => {
-  const { tasks } = useTaskSelector()
-  const { getTaskDetail, clearTaskDetail } = useTaskActions()
-  const { ModalContainer, toggleModal } = useModal()
-
-  useGetTaskUser()
 
   return (
     <>

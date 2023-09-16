@@ -23,7 +23,7 @@ const TaskCard = ({
 
   return (
     <article className='flex flex-row gap-1 items-center rounded-lg bg-gray-900 m-1 p-2'>
-      {isOpen ? <StatusButtons /> : <StatusButton />}
+      {isOpen ? StatusButtons : StatusButton}
       {!isOpen && (
         <>
           <p

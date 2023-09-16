@@ -1,4 +1,4 @@
-import useChangeStatus from '../../../hooks/useChangeStatus'
+import useChangeStatus from '../../hooks/useChangeStatus'
 
 const StatusChanger = ({ initialValue, onChange }) => {
   const { isOpen, StatusButton, StatusButtons } = useChangeStatus(
@@ -8,8 +8,8 @@ const StatusChanger = ({ initialValue, onChange }) => {
 
   return (
     <>
-      {isOpen && <StatusButtons />}
-      {!isOpen && <StatusButton />}
+      {isOpen && StatusButtons}
+      {!isOpen && StatusButton}
     </>
   )
 }

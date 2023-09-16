@@ -14,16 +14,8 @@ export const UsernameEmailSchema = z.object({
 
 export const nameSchema = z.object({
   id_user: z.string().uuid({ message: 'id_user debería ser de formato uuid' }),
-  firstname: z
-    .string()
-    .regex(/^[A-Za-zá-úÁ-ÚüÜñÑ]+(?: [A-Za-zá-úÁ-ÚüÜñÑ]+)?$/g, {
-      message: 'Solo caracteres alfabéticos'
-    }),
-  lastname: z
-    .string()
-    .regex(/^[A-Za-zá-úÁ-ÚüÜñÑ]+(?: [A-Za-zá-úÁ-ÚüÜñÑ]+)?$/g, {
-      message: 'Solo caracteres alfabéticos'
-    })
+  firstname: z.string(),
+  lastname: z.string()
 })
 
 export const PasswordSchema = z.object({

@@ -4,28 +4,26 @@ import UserForm from '../components/UserForm'
 import UserInput from '../components/UserInput'
 import useUpdateUserData from '../hooks/useUpdateUserData'
 
-import { UsernameEmailSchema } from '../utils/schemas'
-import EditButton from '../../../components/buttons/EditButton'
+import { PasswordSchema } from '../utils/schemas'
 import CheckButton from '../../../components/buttons/CheckButton'
+import EditButton from '../../../components/buttons/EditButton'
 
-const UpdateCredentialUser = () => {
-  const { onSubmit, register } = useUpdateUserData({
-    schema: UsernameEmailSchema
-  })
+const UpdatePassword = () => {
+  const { onSubmit, register } = useUpdateUserData({ schema: PasswordSchema })
   const [isEdit, setIsEdit] = useState(false)
 
   return (
-    <UserForm title='Credenciales'>
+    <UserForm title='Cambiar Contraseña'>
       <UserInput
         disabled={!isEdit}
-        label='Nombre de Usuario'
-        id='username'
+        label='Nueva Contraseña'
+        id='password'
         register={register}
       />
       <UserInput
         disabled={!isEdit}
-        label='email'
-        id='email'
+        label='Repetir Nueva Contraseña'
+        id='passwordConfirmation'
         register={register}
       />
 
@@ -43,4 +41,4 @@ const UpdateCredentialUser = () => {
   )
 }
 
-export default UpdateCredentialUser
+export default UpdatePassword
