@@ -10,7 +10,7 @@ const useUpdateUserForm = (
 ) => {
   const { dataUser } = useUserSelector()
 
-  const { register, handleSubmit, reset, getValues, setValue } = useForm({
+  const { register, handleSubmit, getValues, setValue } = useForm({
     defaultValues: {
       id_user: dataUser.id_user,
       firstname: dataUser.firstname,
@@ -27,6 +27,7 @@ const useUpdateUserForm = (
 
   const onSubmit = () => {
     const formData = getValues()
+
     const cleanedFormData = {
       ...formData,
       firstname: cleanField(formData.firstname),
@@ -39,7 +40,9 @@ const useUpdateUserForm = (
       cleanedFormData.firstname !== dataUser.firstname ||
       cleanedFormData.lastname !== dataUser.lastname ||
       cleanedFormData.username !== dataUser.username ||
-      cleanedFormData.email !== dataUser.email
+      cleanedFormData.email !== dataUser.email ||
+      cleanedFormData.password !== '' ||
+      cleanedFormData.passwordConfirmation !== ''
 
     if (isDataChanged) {
       setValue('firstname', cleanedFormData.firstname)
@@ -48,14 +51,13 @@ const useUpdateUserForm = (
       setValue('email', cleanedFormData.email)
 
       handleSubmit(onValid, onInvalid)()
+
+      setValue('password', '')
+      setValue('passwordConfirmation', '')
     }
   }
 
-  return {
-    register,
-    onSubmit,
-    reset
-  }
+  return { register, onSubmit }
 }
 
 export default useUpdateUserForm

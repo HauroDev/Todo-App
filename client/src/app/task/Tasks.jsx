@@ -28,7 +28,7 @@ const Tasks = () => {
   }, [])
 
   return (
-    <>
+    <section className='flex flex-col justify-center items-center'>
       <h2 className='mt-4 text-3xl text-center'>Tareas</h2>
       <CreateTask />
       <ModalContainer>
@@ -45,7 +45,7 @@ const Tasks = () => {
         </TaskDetailProvider>
       </ModalContainer>
 
-      <section className='flex-grow flex flex-col'>
+      <section className='flex-grow flex flex-col overflow-y-scroll max-h-[60%] min-w-[25ch] max-w-[35ch] md:min-w-[60ch] md:max-w-[80ch]'>
         {tasks?.map((task) => (
           <TaskCard
             key={task.id_task}
@@ -58,7 +58,7 @@ const Tasks = () => {
       </section>
 
       <TasksTrashed />
-    </>
+    </section>
   )
 }
 

@@ -18,27 +18,31 @@ export const nameSchema = z.object({
   lastname: z.string()
 })
 
-export const PasswordSchema = z.object({
-  id_user: z.string().uuid({ message: 'id_user debería ser de formato uuid' }),
-  password: z
-    .string()
-    .min(8, { message: 'la contraseña debe tener al menos 8 caracteres' })
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]+$/, {
-      message:
-        'la contraseña debe contener al menos una letra mayúscula, una letra minúscula y un número'
-    })
-    .refine((value) => value.trim() !== '', {
-      message: 'la contraseña no debe estar vacía'
-    }),
-  passwordConfirmation: z.string().refine(
-    (value, data) => {
+export const PasswordSchema = z
+  .object({
+    id_user: z
+      .string()
+      .uuid({ message: 'id_user debería ser de formato uuid' }),
+    password: z
+      .string()
+      .min(8, { message: 'la contraseña debe tener al menos 8 caracteres' })
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]+$/, {
+        message:
+          'la contraseña debe contener al menos una letra mayúscula, una letra minúscula y un número'
+      }),
+    passwordConfirmation: z
+      .string()
+      .nonempty({ message: 'falta confirmación de la contraseña' })
+  })
+  .refine(
+    (data) => {
       if (data.password) {
-        return value === data.password
+        return data.passwordConfirmation === data.password
       }
       return true
     },
     {
+      path: ['passwordConfirmation'],
       message: 'La contraseña no coincide con la confirmación'
     }
   )
-})

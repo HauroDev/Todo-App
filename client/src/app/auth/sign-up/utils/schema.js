@@ -12,8 +12,7 @@ export const signUpSchema = z
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]+$/, {
         message:
           'la contraseña debe contener al menos una letra mayúscula, una letra minúscula y un número'
-      })
-      .nullable(),
+      }),
     passwordConfirmation: z.string().nonempty(),
     email: z
       .string()

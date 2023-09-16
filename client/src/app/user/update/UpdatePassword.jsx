@@ -19,12 +19,14 @@ const UpdatePassword = () => {
         label='Nueva Contraseña'
         id='password'
         register={register}
+        type='password'
       />
       <UserInput
         disabled={!isEdit}
         label='Repetir Nueva Contraseña'
         id='passwordConfirmation'
         register={register}
+        type='password'
       />
 
       {!isEdit ? (

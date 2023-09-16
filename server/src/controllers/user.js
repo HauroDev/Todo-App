@@ -136,7 +136,11 @@ class UserController {
 
       const userUpdated = await userFound.update(userInfo.data)
 
-      res.status(200).json(userUpdated)
+      const userUpdatedJSON = userUpdated.toJSON()
+
+      delete userUpdatedJSON.password
+
+      res.status(200).json(userUpdatedJSON)
     } catch (error) {
       res.status(error.status || 500).json({ message: error.message })
     }

@@ -22,13 +22,13 @@ const TaskCard = ({
   )
 
   return (
-    <article className='flex flex-row gap-1 items-center rounded-lg bg-gray-900 m-1 p-2'>
+    <article className='flex flex-row gap-1 items-center rounded-lg bg-gray-900 p-2 w-full'>
       {isOpen ? StatusButtons : StatusButton}
       {!isOpen && (
         <>
           <p
             onClick={onClick}
-            className='p-2 m-1 w-full bg-gray-600 rounded-lg cursor-pointer'>
+            className='p-2 m-1 w-full bg-gray-600 rounded-lg cursor-pointer truncate'>
             {title}
           </p>
 

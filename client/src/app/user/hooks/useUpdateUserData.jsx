@@ -5,16 +5,12 @@ import shortMessage from '../utils/messages'
 
 const useUpdateUserData = ({ schema }) => {
   const { updateInfo, getInfo } = useUserActions()
-  const { onSubmit, register, reset } = useUpdateUserForm(
+  const { onSubmit, register } = useUpdateUserForm(
     schema,
-    (data) =>
-      updateInfo(data)
-        .then(() => getInfo(data.id_user))
-        .then(() => reset()),
+    (data) => updateInfo(data).then(() => getInfo(data.id_user)),
     (dataInvalid) => {
       const message = shortMessage(dataInvalid)
       toast.error(message)
-      reset()
     }
   )
 

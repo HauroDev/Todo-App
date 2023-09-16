@@ -14,7 +14,8 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
   client:
-    build: ./client
+    build:
+      context: ./client
     container_name: todo-app-client
     ports:
       - '5173:5173'
@@ -25,7 +26,8 @@ services:
       - /usr/src/app/todo-app-client/node_modules
 
   server:
-    build: ./server
+    build:
+      context: ./server
     container_name: todo-app-server
     ports:
       - '4001:4001'
