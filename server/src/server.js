@@ -16,19 +16,18 @@ const routerApp = require('./router')
 
 class Server {
   static middleware() {
-    this.app.disable('x-powered-by')
-
-    this.app.use(morgan('dev'))
-
-    this.app.use(express.json())
-    this.app.use(express.urlencoded({ extended: true }))
-
-    const originAllowed = [URL_CLIENT_DEVELOPMENT, URL_CLIENT_PRODUCTION]
-
-    this.app.use(
+    this.app
+    .disable('x-powered-by')
+    .use(morgan('dev'))
+    .use(express.json())
+    .use(express.urlencoded({ extended: true }))
+    .use(
       cors({
         origin: (origin, callback) => {
+          const originAllowed = [URL_CLIENT_DEVELOPMENT, URL_CLIENT_PRODUCTION]
+
           if (!origin) return callback(null, true)
+          
           if (originAllowed.indexOf(origin) === -1) {
             const msg =
               'The CORS policy for this site does not allow access from the specified Origin.'
@@ -38,7 +37,7 @@ class Server {
         }
       })
     )
-    this.app.use('/api/v1', routerApp)
+    .use('/api/v1', routerApp)
   }
 
   static methods() {
@@ -47,13 +46,19 @@ class Server {
     })
   }
 
-  static async connectWithDb() {
-    try {
-      await db.sync({ force: false })
-      console.log('database connection successfully\n')
-    } catch (error) {
-      console.log(error)
+  static async connectWithDb({ tryConnection = 5, noLogs = false }) {
+    while (tryConnection > 0) {
+      try {
+        await db.sync({ force: false });
+        !noLogs && console.log('database connection successfully\n');
+        return;
+      } catch (error) {
+        !noLogs && console.log('error: ' + error.message + ', retrying in 5 seconds\n');
+      }
+      tryConnection--;
     }
+
+    throw new Error('database connection failed');
   }
 
   static start() {
@@ -65,6 +70,9 @@ class Server {
       .then(() => {
         this.middleware()
         this.methods()
+      })
+      .catch((error) => console.error(error.message))
+      .finally(() => {
         this.app.listen(PORT, () => {
           let message = 'Server is running'
 
@@ -75,7 +83,6 @@ class Server {
           console.log('Press Ctrl+C to stop')
         })
       })
-      .catch((error) => console.error(error))
   }
 }
 
